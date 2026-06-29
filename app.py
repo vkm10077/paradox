@@ -1,4 +1,4 @@
-from flask import Flask, redirect
+from flask import Flask, redirect, request
 import os
 from fyers_apiv3 import fyersModel
 import pandas as pd
@@ -21,6 +21,24 @@ session = fyersModel.SessionModel(
 @app.route("/login")
 def login():
     return redirect(session.generate_authcode())
+    
+ @app.route("/callback")
+def callback():
+
+    auth_code = request.args.get("auth_code")
+
+    if not auth_code:
+        return "Authorization code not received."
+
+    session.set_token(auth_code)
+
+    response = session.generate_token()
+
+    return f"""
+    <h2>FYERS Login Successful</h2>
+
+    <pre>{response}</pre>
+    """   
 
 @app.route("/")
 def home():

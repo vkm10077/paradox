@@ -42,13 +42,61 @@ def home():
     result = scan_stock(df)
 
     return f"""
-    <h1>Professional Trading Dashboard</h1>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Professional Trading Dashboard</title>
 
-    <h2>Scanner Result</h2>
+<style>
+body {{
+    font-family: Arial;
+    background:#f5f5f5;
+    padding:30px;
+}}
 
-    <pre>{result}</pre>
-    """
+.card {{
+    background:white;
+    border-radius:10px;
+    padding:20px;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+}}
 
+.btn {{
+    background:#28a745;
+    color:white;
+    padding:12px 25px;
+    text-decoration:none;
+    border-radius:8px;
+    font-size:18px;
+}}
 
-if __name__ == "__main__":
-    app.run(debug=True)
+pre {{
+    background:#eee;
+    padding:15px;
+    border-radius:8px;
+}}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>Professional Trading Dashboard</h1>
+
+<p>
+<a class="btn" href="/login">
+🔐 Login with FYERS
+</a>
+</p>
+
+<h2>Scanner Result</h2>
+
+<pre>{result}</pre>
+
+</div>
+
+</body>
+</html>
+"""

@@ -22,7 +22,7 @@ session = fyersModel.SessionModel(
 def login():
     return redirect(session.generate_authcode())
     
- @app.route("/callback")
+@app.route("/callback")
 def callback():
 
     auth_code = request.args.get("auth_code")

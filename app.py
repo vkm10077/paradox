@@ -1,10 +1,26 @@
-from flask import Flask
+from flask import Flask, redirect
+import os
+from fyers_apiv3 import fyersModel
 import pandas as pd
 
 from modules.scanner import scan_stock
 
 app = Flask(__name__)
+CLIENT_ID = os.environ.get("FYERS_CLIENT_ID")
+SECRET_KEY = os.environ.get("FYERS_SECRET_KEY")
 
+REDIRECT_URI = "https://rocky-jvah.onrender.com/callback"
+
+session = fyersModel.SessionModel(
+    client_id=CLIENT_ID,
+    secret_key=SECRET_KEY,
+    redirect_uri=REDIRECT_URI,
+    response_type="code",
+    grant_type="authorization_code"
+)
+@app.route("/login")
+def login():
+    return redirect(session.generate_authcode())
 
 @app.route("/")
 def home():

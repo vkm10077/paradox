@@ -129,5 +129,20 @@ pre {{
 </html>
 """
 
+@app.route("/dashboard")
+def dashboard():
+
+    access_token = session.get("access_token")
+
+    if not access_token:
+        return redirect("/login")
+
+    quotes = get_dashboard_data(CLIENT_ID, access_token)
+
+    return f"""
+    <h2>📊 FYERS Professional Dashboard</h2>
+    <pre>{quotes}</pre>
+    """
+
 if __name__ == "__main__":
     app.run(...)

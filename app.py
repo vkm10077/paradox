@@ -45,8 +45,7 @@ def callback():
 
     profile = fyers.get_profile()
     session["access_token"] = access_token
-
-         return redirect("/dashboard") 
+    return redirect("/dashboard") 
 @app.route("/")
 def home():
 

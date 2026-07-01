@@ -12,7 +12,7 @@ SECRET_KEY = os.environ.get("FYERS_SECRET_KEY")
 
 REDIRECT_URI = "https://rocky-jvah.onrender.com/callback"
 
-session = fyersModel.SessionModel(
+fyers_session = fyersModel.SessionModel(
     client_id=CLIENT_ID,
     secret_key=SECRET_KEY,
     redirect_uri=REDIRECT_URI,
@@ -21,7 +21,7 @@ session = fyersModel.SessionModel(
 )
 @app.route("/login")
 def login():
-    return redirect(session.generate_authcode())
+    return redirect(fyers_session.generate_authcode())
     
 @app.route("/callback")
 def callback():
@@ -31,9 +31,9 @@ def callback():
     if not auth_code:
         return "Authorization code not received."
 
-    session.set_token(auth_code)
+   fyers_session.set_token(auth_code)
 
-    response = session.generate_token()
+    response = fyers_session.generate_token()
 
     access_token = response["access_token"]
 

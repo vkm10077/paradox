@@ -31,7 +31,7 @@ def callback():
     if not auth_code:
         return "Authorization code not received."
 
-   fyers_session.set_token(auth_code)
+    fyers_session.set_token(auth_code)
 
     response = fyers_session.generate_token()
 

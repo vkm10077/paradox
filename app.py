@@ -134,12 +134,48 @@ def dashboard():
     if not access_token:
         return redirect("/login")
 
-    quotes = get_dashboard_data(CLIENT_ID, access_token)
+    quotes = get_dashboard_data(
+        CLIENT_ID,
+        access_token
+    )
 
     return f"""
-    <h2>📊 FYERS Professional Dashboard</h2>
-    <pre>{quotes}</pre>
-    """
+    <html>
+    <head>
+    <title>FYERS Dashboard</title>
 
-if __name__ == "__main__":
-    app.run(...)
+    <meta http-equiv="refresh" content="30">
+
+    <style>
+    body {{
+        font-family: Arial;
+        background:#f5f5f5;
+        padding:20px;
+    }}
+
+    .card {{
+        background:white;
+        padding:20px;
+        border-radius:10px;
+        box-shadow:0 2px 10px rgba(0,0,0,.1);
+    }}
+
+    pre {{
+        white-space:pre-wrap;
+    }}
+    </style>
+
+    </head>
+
+    <body>
+
+    <div class="card">
+        <h2>📊 FYERS Professional Dashboard</h2>
+
+        <pre>{quotes}</pre>
+
+    </div>
+
+    </body>
+    </html>
+    """

@@ -4,6 +4,7 @@ from fyers_apiv3 import fyersModel
 import pandas as pd
 
 from modules.scanner import scan_stock
+from dashboard import get_dashboard_data
 
 app = Flask(__name__)
 CLIENT_ID = os.environ.get("FYERS_CLIENT_ID")

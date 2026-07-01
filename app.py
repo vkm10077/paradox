@@ -33,6 +33,15 @@ def callback():
     session.set_token(auth_code)
 
     response = session.generate_token()
+    access_token = response["access_token"]
+
+fyers = fyersModel.FyersModel(
+    client_id=CLIENT_ID,
+    token=access_token,
+    is_async=False
+)
+
+profile = fyers.get_profile()
 
     return f"""
     <h2>FYERS Login Successful</h2>

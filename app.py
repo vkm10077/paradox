@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request
+from flask import Flask, redirect, request, session
 import os
 from fyers_apiv3 import fyersModel
 import pandas as pd
@@ -7,6 +7,7 @@ from modules.scanner import scan_stock
 from dashboard import get_dashboard_data
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY")
 CLIENT_ID = os.environ.get("FYERS_CLIENT_ID")
 SECRET_KEY = os.environ.get("FYERS_SECRET_KEY")
 

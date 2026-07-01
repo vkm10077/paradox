@@ -44,6 +44,7 @@ def callback():
     )
 
     profile = fyers.get_profile()
+    session["access_token"] = access_token
 
     return f"""
     <h2>FYERS Login Successful</h2>

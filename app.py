@@ -138,6 +138,7 @@ def dashboard():
         CLIENT_ID,
         access_token
     )
+    print(quotes)
 
     return f"""
     <html>

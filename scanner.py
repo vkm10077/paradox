@@ -139,7 +139,7 @@ def scan_nifty500(fyers):
                 "entry": entry,
                 "stoploss": stoploss,
                 "target1": target1,
-                "target2": target2
+                "target2": target2,
                 "breakout": breakout 
             }
 

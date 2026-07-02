@@ -25,8 +25,8 @@ market_symbols = [
 
 ]
     
-    quotes = fyers.quotes({
-        "symbols": ",".join(market_symbols)
-    })
+quotes = fyers.quotes({
+    "symbols": ",".join(market_symbols)
+})
 
-    return quotes
+return quotes

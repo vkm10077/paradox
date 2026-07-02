@@ -127,6 +127,51 @@
         {% endfor %}
     </table>
 </div>
+    
+<br><br>
 
+<div class="card">
+    <h2>📈 NIFTY 500 Smart Scanner</h2>
+
+    <table>
+        <tr>
+            <th>Stock</th>
+            <th>Price</th>
+            <th>RSI</th>
+            <th>EMA20</th>
+            <th>EMA50</th>
+            <th>EMA200</th>
+            <th>VWAP</th>
+            <th>Supertrend</th>
+            <th>Volume</th>
+            <th>Score</th>
+            <th>Signal</th>
+        </tr>
+
+        {% for stock in scanner_results %}
+        <tr>
+            <td>{{ stock.symbol }}</td>
+            <td>{{ stock.price }}</td>
+            <td>{{ stock.rsi }}</td>
+            <td>{{ stock.ema20 }}</td>
+            <td>{{ stock.ema50 }}</td>
+            <td>{{ stock.ema200 }}</td>
+            <td>{{ stock.vwap }}</td>
+            <td>{{ stock.supertrend }}</td>
+            <td>{{ stock.volume_signal }}</td>
+            <td>{{ stock.score }}/100</td>
+
+            <td>
+                {% if "BUY" in stock.signal %}
+                    <span class="green">{{ stock.signal }}</span>
+                {% else %}
+                    <span class="red">{{ stock.signal }}</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+    
 </body>
 </html>

@@ -61,7 +61,10 @@ def scan_nifty500(fyers):
             vwap = calculate_vwap(df)
             supertrend = calculate_supertrend(df)
             volume_signal = calculate_volume_signal(df)
-
+            
+            pattern = "NA"
+            support = round(df["low"].tail(20).min(), 2)
+            resistance = round(df["high"].tail(20).max(), 2)
             data = {
                 "symbol": symbol.replace("NSE:", "").replace("-EQ", ""),
                 "price": price,
@@ -71,7 +74,10 @@ def scan_nifty500(fyers):
                 "ema200": ema200,
                 "vwap": vwap,
                 "supertrend": supertrend,
-                "volume_signal": volume_signal
+                "volume_signal": volume_signal,
+                "pattern": pattern,
+                "support": support,
+                "resistance": resistance
             }
 
             score = calculate_smart_score(data)

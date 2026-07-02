@@ -140,7 +140,7 @@ def dashboard():
         for item in quotes.get("d", []):
             v = item.get("v", {})
 
-            if v.get("s") == "ok":
+            if item.get("s") == "ok":
                 rows.append({
                     "symbol": v.get("short_name", item.get("n")),
                     "price": v.get("lp", 0),

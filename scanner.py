@@ -107,6 +107,8 @@ def scan_nifty500(fyers):
             volume_signal = calculate_volume_signal(df)
             
             pattern = detect_pattern(df)
+            if not pattern:
+                pattern = "NA"
             support = round(df["low"].tail(20).min(), 2)
             resistance = round(df["high"].tail(20).max(), 2)
             data = {

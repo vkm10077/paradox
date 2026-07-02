@@ -111,6 +111,15 @@ def scan_nifty500(fyers):
                 pattern = "NA"
             support = round(df["low"].tail(20).min(), 2)
             resistance = round(df["high"].tail(20).max(), 2)
+            entry = resistance
+
+            stoploss = support
+
+            risk = entry - stoploss
+
+            target1 = round(entry + risk, 2)
+
+            target2 = round(entry + (risk * 2), 2)
             data = {
                 "symbol": symbol.replace("NSE:", "").replace("-EQ", ""),
                 "price": price,
@@ -123,7 +132,11 @@ def scan_nifty500(fyers):
                 "volume_signal": volume_signal,
                 "pattern": pattern,
                 "support": support,
-                "resistance": resistance
+                "resistance": resistance,
+                "entry": entry,
+                "stoploss": stoploss,
+                "target1": target1,
+                "target2": target2
             }
 
             score = calculate_smart_score(data)

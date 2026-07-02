@@ -120,6 +120,9 @@ def scan_nifty500(fyers):
             target1 = round(entry + risk, 2)
 
             target2 = round(entry + (risk * 2), 2)
+            if price > prev_resistance: breakout = "yes"
+            else:
+                breakout = "NO"
             data = {
                 "symbol": symbol.replace("NSE:", "").replace("-EQ", ""),
                 "price": price,
@@ -137,6 +140,7 @@ def scan_nifty500(fyers):
                 "stoploss": stoploss,
                 "target1": target1,
                 "target2": target2
+                "breakout": breakout 
             }
 
             score = calculate_smart_score(data)

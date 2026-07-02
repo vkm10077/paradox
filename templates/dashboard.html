@@ -165,6 +165,7 @@
             <th>Stop Loss</th>
             <th>Target 1</th>
             <th>Target 2</th>
+            <th>Breakout</th>
             <th>Score</th>
             <th>Signal</th>
         </tr>
@@ -187,6 +188,7 @@
             <td>{{ stock.stoploss }}</td>
             <td>{{ stock.target1 }}</td>
             <td>{{ stock.target2 }}</td>
+            <td>{{ stock.breakout }}</td>
             <td>{{ stock.score }}/100</td>
             <td>
                 {% if "BUY" in stock.signal %}

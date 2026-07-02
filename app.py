@@ -132,6 +132,7 @@ def dashboard():
         return redirect("/login")
 
     quotes = get_dashboard_data(CLIENT_ID, session["access_token"])
+    print(quotes)
 
     rows = []
 

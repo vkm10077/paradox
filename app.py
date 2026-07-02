@@ -128,53 +128,107 @@ pre {{
 
 @app.route("/dashboard")
 def dashboard():
-
-    access_token = session.get("access_token")
-
-    if not access_token:
+    if "access_token" not in session:
         return redirect("/login")
 
-    quotes = get_dashboard_data(
-        CLIENT_ID,
-        access_token
-    )
-    print(quotes)
+    quotes = get_dashboard_data(CLIENT_ID, session["access_token"])
+
+    rows = []
+
+    if quotes.get("s") == "ok":
+        for item in quotes.get("d", []):
+            v = item.get("v", {})
+
+            if v.get("s") == "ok":
+                rows.append({
+                    "symbol": v.get("short_name", item.get("n")),
+                    "price": v.get("lp", 0),
+                    "change": v.get("ch", 0),
+                    "change_pct": v.get("chp", 0),
+                    "high": v.get("high_price", 0),
+                    "low": v.get("low_price", 0),
+                    "open": v.get("open_price", 0),
+                    "prev_close": v.get("prev_close_price", 0),
+                })
 
     return f"""
+    <!DOCTYPE html>
     <html>
     <head>
-    <title>FYERS Dashboard</title>
-
-    <meta http-equiv="refresh" content="30">
-
-    <style>
-    body {{
-        font-family: Arial;
-        background:#f5f5f5;
-        padding:20px;
-    }}
-
-    .card {{
-        background:white;
-        padding:20px;
-        border-radius:10px;
-        box-shadow:0 2px 10px rgba(0,0,0,.1);
-    }}
-
-    pre {{
-        white-space:pre-wrap;
-    }}
-    </style>
-
+        <title>FYERS Dashboard</title>
+        <meta http-equiv="refresh" content="10">
+        <style>
+            body {{
+                font-family: Arial;
+                background: #eef2f7;
+                padding: 20px;
+            }}
+            .card {{
+                background: white;
+                padding: 20px;
+                border-radius: 14px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+            }}
+            h2 {{
+                margin-bottom: 20px;
+            }}
+            table {{
+                width: 100%;
+                border-collapse: collapse;
+            }}
+            th {{
+                background: #111827;
+                color: white;
+                padding: 12px;
+            }}
+            td {{
+                padding: 12px;
+                text-align: center;
+                border-bottom: 1px solid #ddd;
+            }}
+            .green {{
+                color: green;
+                font-weight: bold;
+            }}
+            .red {{
+                color: red;
+                font-weight: bold;
+            }}
+        </style>
     </head>
-
     <body>
 
     <div class="card">
-        <h2>📊 FYERS Professional Dashboard</h2>
+        <h2>📊 FYERS Professional Trading Dashboard</h2>
 
-        <pre>{quotes}</pre>
+        <table>
+            <tr>
+                <th>Symbol</th>
+                <th>LTP</th>
+                <th>Change</th>
+                <th>Change %</th>
+                <th>Open</th>
+                <th>High</th>
+                <th>Low</th>
+                <th>Prev Close</th>
+            </tr>
 
+            {''.join([
+                f'''
+                <tr>
+                    <td><b>{r["symbol"]}</b></td>
+                    <td>{r["price"]}</td>
+                    <td class="{'green' if r["change"] >= 0 else 'red'}">{r["change"]}</td>
+                    <td class="{'green' if r["change_pct"] >= 0 else 'red'}">{r["change_pct"]}%</td>
+                    <td>{r["open"]}</td>
+                    <td>{r["high"]}</td>
+                    <td>{r["low"]}</td>
+                    <td>{r["prev_close"]}</td>
+                </tr>
+                ''' for r in rows
+            ])}
+
+        </table>
     </div>
 
     </body>

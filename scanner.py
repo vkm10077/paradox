@@ -121,15 +121,15 @@ def scan_nifty500(fyers):
 
             target2 = round(entry + (risk * 2), 2)
             avg_volume = df["volume"].tail(20).mean()
-today_volume = df["volume"].iloc[-1]
+            today_volume = df["volume"].iloc[-1]
 
-if price > prev_resistance:
-    if today_volume >= avg_volume * 1.5:
-        breakout = "STRONG"
-    else:
-        breakout = "WEAK"
-else:
-    breakout = "NO"
+            if price > prev_resistance:
+                if today_volume >= avg_volume * 1.5:
+                breakout = "STRONG"
+            else:
+                breakout = "WEAK"
+            else:
+                breakout = "NO"
             data = {
                 "symbol": symbol.replace("NSE:", "").replace("-EQ", ""),
                 "price": price,

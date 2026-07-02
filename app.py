@@ -1,3 +1,4 @@
+from market import get_fyers
 from flask import Flask, render_template, redirect, request, session
 import os
 from fyers_apiv3 import fyersModel
@@ -132,6 +133,7 @@ def dashboard():
     if "access_token" not in session:
         return redirect("/login")
 
+    fyers = get_fyers(CLIENT_ID, session["access_token"])
     quotes = get_dashboard_data(CLIENT_ID, session["access_token"])
     print(quotes)
 
@@ -152,6 +154,9 @@ def dashboard():
                     "open": v.get("open_price", 0),
                     "prev_close": v.get("prev_close_price", 0),
                 })
-                
-    return render_template("dashboard.html", rows=rows)
-    
+     scanner_results = scan_nifty500(fyers)           
+    return render_template(
+    "dashboard.html",
+    rows=rows,
+    scanner_results=scanner_results
+)

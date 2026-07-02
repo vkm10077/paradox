@@ -1,5 +1,6 @@
 from fyers_apiv3 import fyersModel
 
+
 def get_dashboard_data(client_id, access_token):
 
     fyers = fyersModel.FyersModel(
@@ -7,7 +8,7 @@ def get_dashboard_data(client_id, access_token):
         token=access_token,
         is_async=False
     )
-def get_dashboard_data(fyers):
+
     market_symbols = [
         "NSE:NIFTY50-INDEX",
         "NSE:NIFTYBANK-INDEX",

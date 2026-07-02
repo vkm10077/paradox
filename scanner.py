@@ -162,6 +162,5 @@ def scan_nifty500(fyers):
             continue
 
     results = sorted(results, key=lambda x: x["score"], reverse=True)
-    results = [stock for stock in results if stock["score"] >= 70]
-
+    
     return results

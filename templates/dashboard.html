@@ -63,6 +63,36 @@
 
 <div class="card">
     <h2>📊 FYERS Professional Trading Dashboard</h2>
+    <div style="display:flex;flex-wrap:wrap;gap:15px;margin:20px 0;">
+
+    {% for r in rows[:6] %}
+
+    <div style="
+        background:#1e293b;
+        border-radius:12px;
+        padding:15px;
+        min-width:180px;
+        flex:1;
+        box-shadow:0 3px 10px rgba(0,0,0,.3);
+    ">
+
+        <div style="font-size:15px;color:#94a3b8;">
+            {{ r.symbol }}
+        </div>
+
+        <div style="font-size:28px;font-weight:bold;margin-top:10px;">
+            {{ r.price }}
+        </div>
+
+        <div class="{% if r.change >= 0 %}green{% else %}red{% endif %}">
+            {{ r.change }} ({{ r.change_pct }}%)
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
 
     <table>
         <tr>

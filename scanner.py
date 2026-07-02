@@ -125,9 +125,9 @@ def scan_nifty500(fyers):
 
             if price > prev_resistance:
                 if today_volume >= avg_volume * 1.5:
-                breakout = "STRONG"
-            else:
-                breakout = "WEAK"
+                    breakout = "STRONG"
+                else:
+                    breakout = "WEAK"
             else:
                 breakout = "NO"
             data = {

@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request, session
+from flask import Flask, render_template, redirect, request, session
 import os
 from fyers_apiv3 import fyersModel
 import pandas as pd
@@ -151,7 +151,7 @@ def dashboard():
                     "prev_close": v.get("prev_close_price", 0),
                 })
 
-    return f"""
+    return render_template("dashboard.html", rows=rows)
     <!DOCTYPE html>
     <html>
     <head>

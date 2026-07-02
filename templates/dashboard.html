@@ -161,6 +161,10 @@
             <th>Pattern</th>
             <th>Support</th>
             <th>Resistance</th>
+            <th>Entry</th>
+            <th>Stop Loss</th>
+            <th>Target 1</th>
+            <th>Target 2</th>
             <th>Score</th>
             <th>Signal</th>
         </tr>
@@ -179,6 +183,10 @@
             <td>{{ stock.pattern }}</td>
             <td>{{ stock.support }}</td>
             <td>{{ stock.resistance }}</td>
+            <td>{{ stock.entry }}</td>
+            <td>{{ stock.stoploss }}</td>
+            <td>{{ stock.target1 }}</td>
+            <td>{{ stock.target2 }}</td>
             <td>{{ stock.score }}/100</td>
             <td>
                 {% if "BUY" in stock.signal %}

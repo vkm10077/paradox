@@ -190,8 +190,17 @@
             <td>{{ stock.stoploss }}</td>
             <td>{{ stock.target1 }}</td>
             <td>{{ stock.target2 }}</td>
-            <td>{{ stock.breakout }}</td>
-            <td>{{ stock.score }}/100</td>
+            <td>
+                {% if stock.breakout == "STRONG" %}
+                     <span class="green">STRONG</span>
+
+                {% elif stock.breakout == "WEAK" %}
+                      <span style="color:orange;font-weight:bold;">WEAK</span>
+
+                {% else %}
+                      <span class="red">NO</span>
+                {% endif %}
+            </td  <td>{{ stock.score }}/100</td>
             <td>
                 {% if "BUY" in stock.signal %}
                     <span class="green">{{ stock.signal }}</span>

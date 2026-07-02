@@ -7,24 +7,20 @@ def get_dashboard_data(client_id, access_token):
         token=access_token,
         is_async=False
     )
-market_symbols = [
-
-    # Indian Indices
-    "NSE:NIFTY50-INDEX",
-    "NSE:NIFTYBANK-INDEX",
-    "BSE:SENSEX-INDEX",
-    "NSE:FINNIFTY-INDEX",
-    "NSE:MIDCPNIFTY-INDEX",
-    "NSE:INDIAVIX-INDEX",
-
-    # MCX Futures (current contract के अनुसार बाद में auto rollover करेंगे)
-    "MCX:GOLDM",
-    "MCX:SILVERM",
-    "MCX:CRUDEOILM",
-    "MCX:NATURALGASM"
-
+def get_dashboard_data(fyers):
+    market_symbols = [
+        "NSE:NIFTY50-INDEX",
+        "NSE:NIFTYBANK-INDEX",
+        "BSE:SENSEX-INDEX",
+        "NSE:FINNIFTY-INDEX",
+        "NSE:MIDCPNIFTY-INDEX",
+        "NSE:INDIAVIX-INDEX",
+        "MCX:GOLDM",
+        "MCX:SILVERM",
+        "MCX:CRUDEOILM",
+        "MCX:NATURALGASM"
     ]
-    
+
     quotes = fyers.quotes({
         "symbols": ",".join(market_symbols)
     })

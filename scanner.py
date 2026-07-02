@@ -11,6 +11,50 @@ from indicators import (
 )
 from smart_score import calculate_smart_score, get_signal
 
+def detect_pattern(df):
+    last = df.iloc[-1]
+    prev = df.iloc[-2]
+
+    open_p = last["open"]
+    close_p = last["close"]
+    high_p = last["high"]
+    low_p = last["low"]
+
+    body = abs(close_p - open_p)
+    candle_range = high_p - low_p
+
+    if candle_range == 0:
+        return "NA"
+
+    upper_shadow = high_p - max(open_p, close_p)
+    lower_shadow = min(open_p, close_p) - low_p
+
+    if body <= candle_range * 0.10:
+        return "Doji"
+
+    if lower_shadow >= body * 2 and upper_shadow <= body:
+        return "Hammer"
+
+    if upper_shadow >= body * 2 and lower_shadow <= body:
+        return "Shooting Star"
+
+    if (
+        prev["close"] < prev["open"]
+        and close_p > open_p
+        and close_p > prev["open"]
+        and open_p < prev["close"]
+    ):
+        return "Bullish Engulfing"
+
+    if (
+        prev["close"] > prev["open"]
+        and close_p < open_p
+        and open_p > prev["close"]
+        and close_p < prev["open"]
+    ):
+        return "Bearish Engulfing"
+
+        return "NA"
 
 def get_historical_df(fyers, symbol):
     to_date = datetime.now().strftime("%Y-%m-%d")
@@ -62,7 +106,7 @@ def scan_nifty500(fyers):
             supertrend = calculate_supertrend(df)
             volume_signal = calculate_volume_signal(df)
             
-            pattern = "NA"
+            pattern = detect_pattern(df)
             support = round(df["low"].tail(20).min(), 2)
             resistance = round(df["high"].tail(20).max(), 2)
             data = {

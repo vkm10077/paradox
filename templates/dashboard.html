@@ -132,6 +132,20 @@
 
 <div class="card">
     <h2>📈 NIFTY 500 Smart Scanner</h2>
+    <form method="get" action="/dashboard">
+
+    <label><b>Signal Filter:</b></label>
+
+    <select name="signal" onchange="this.form.submit()">
+        <option value="ALL" {% if selected_signal == "ALL" %}selected{% endif %}>ALL</option>
+        <option value="BUY" {% if selected_signal == "BUY" %}selected{% endif %}>BUY</option>
+        <option value="NEUTRAL" {% if selected_signal == "NEUTRAL" %}selected{% endif %}>NEUTRAL</option>
+        <option value="SELL" {% if selected_signal == "SELL" %}selected{% endif %}>SELL</option>
+    </select>
+
+</form>
+
+<br>
 
     <table>
         <tr>

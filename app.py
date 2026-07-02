@@ -154,9 +154,10 @@ def dashboard():
                     "open": v.get("open_price", 0),
                     "prev_close": v.get("prev_close_price", 0),
                 })
-     scanner_results = scan_nifty500(fyers)           
+                
+    scanner_results = scan_nifty500(fyers)           
     return render_template(
     "dashboard.html",
-    rows=rows,
-    scanner_results=scanner_results
+        rows=rows,
+        scanner_results=scanner_results
 )

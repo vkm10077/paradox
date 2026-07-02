@@ -152,6 +152,6 @@ def dashboard():
                     "open": v.get("open_price", 0),
                     "prev_close": v.get("prev_close_price", 0),
                 })
-
+                
     return render_template("dashboard.html", rows=rows)
     

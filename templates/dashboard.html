@@ -158,6 +158,9 @@
             <th>VWAP</th>
             <th>Supertrend</th>
             <th>Volume</th>
+            <th>Pattern</th>
+            <th>Support</th>
+            <th>Resistance</th>
             <th>Score</th>
             <th>Signal</th>
         </tr>
@@ -173,8 +176,10 @@
             <td>{{ stock.vwap }}</td>
             <td>{{ stock.supertrend }}</td>
             <td>{{ stock.volume_signal }}</td>
+            <td>{{ stock.pattern }}</td>
+            <td>{{ stock.support }}</td>
+            <td>{{ stock.resistance }}</td>
             <td>{{ stock.score }}/100</td>
-
             <td>
                 {% if "BUY" in stock.signal %}
                     <span class="green">{{ stock.signal }}</span>

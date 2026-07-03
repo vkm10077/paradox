@@ -156,10 +156,10 @@ def dashboard():
                 })
                 
     scanner_results = scan_nifty500(fyers)
-    scanner_results = [
-        stock for stock in scanner_results
-        if stock.get("score", 0) >= 70
-    ]
+    # scanner_results = [
+    # stock for stock in scanner_results
+    #  if stock.get("score", 0) >= 70
+    # ]
     selected_signal = request.args.get("signal", "ALL")
 
     if selected_signal != "ALL":

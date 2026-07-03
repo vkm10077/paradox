@@ -499,3 +499,5 @@ NIFTY500 = [
 "NSE:TTML-EQ",
 "NSE:ZFCVINDIA-EQ",
 ]  
+
+NIFTY500 = list(dict.fromkeys(NIFTY500))

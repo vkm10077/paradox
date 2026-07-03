@@ -153,6 +153,14 @@ def scan_nifty500(fyers):
             score = calculate_smart_score(data)
             signal = get_signal(score)
 
+            # Strong Breakout Confirmation
+
+            if breakout == "STRONG":
+                score += 10
+
+                if "buy" in signal:
+                     signal = "STRONG BUY"
+
             data["score"] = score
             data["signal"] = signal
 

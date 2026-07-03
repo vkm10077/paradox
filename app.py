@@ -158,13 +158,13 @@ def dashboard():
                 
     batch = (int(time.time() / 30) % 10)
 
-start = batch * 50
+    start = batch * 50
 
-scanner_results = scan_nifty500(
-    fyers,
-    start=start,
-    limit=50
-)
+    scanner_results = scan_nifty500(
+        fyers,
+        start=start,
+        limit=50
+    )
     
     selected_signal = request.args.get("signal", "ALL")
 

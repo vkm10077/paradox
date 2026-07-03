@@ -186,4 +186,5 @@ def scan_nifty500(fyers):
 
     results = sorted(results, key=lambda x: x["score"], reverse=True)
     
+    print("TOTAL SCANNER RESULTS:", len(results))
     return results

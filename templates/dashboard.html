@@ -167,7 +167,7 @@
             <th>Stop Loss</th>
             <th>Target 1</th>
             <th>Target 2</th>
-            <th>Breakout</th>
+            <th>Institutional</th>
             <th>Score</th>
             <th>Signal</th>
         </tr>
@@ -200,11 +200,21 @@
                <span class="red">🔴 NO</span>
             {% endif %}
             </td>
-                {% if "BUY" in stock.signal %}
-                    <span class="green">{{ stock.signal }}</span>
-                {% else %}
-                    <span class="red">{{ stock.signal }}</span>
-                {% endif %}
+
+            <td>
+            {% if stock.institutional_breakout == "YES" %}
+               🟢 YES
+            {% else %}
+               🔴 NO
+            {% endif %}
+            </td>
+
+            <td>
+            {% if "BUY" in stock.signal %}
+                <span class="green">{{ stock.signal }}</span>
+            {% else %}
+                <span class="red">{{ stock.signal }}</span>
+            {% endif %}
             </td>
         </tr>
         {% endfor %}

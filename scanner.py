@@ -167,13 +167,12 @@ def scan_nifty500(fyers):
             institutional_breakout = "NO"
 
             if (
-                breakout == "STRONG"
                 and price > ema20
                 and price > ema50
                 and price > ema200
                 and rsi >= 55
                 and volume_signal in ["HIGH", "NORMAL"]
-                and score >= 80
+                and score >= 70
             ):
                 institutional_breakout = "YES"
 

@@ -167,7 +167,7 @@ def scan_nifty500(fyers):
             institutional_breakout = "NO"
 
             if (
-                and price > ema20
+                price > ema20
                 and price > ema50
                 and price > ema200
                 and rsi >= 55

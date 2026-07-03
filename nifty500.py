@@ -1,13 +1,12 @@
-
-    NIFTY500 = [
-        "NSE:RELIANCE-EQ",
-        "NSE:TCS-EQ",
-        "NSE:HDFCBANK-EQ",
-        "NSE:ICICIBANK-EQ",
-        "NSE:INFY-EQ",
-        "NSE:SBIN-EQ",
-        "NSE:BHARTIARTL-EQ",
-        "NSE:ITC-EQ",
-        "NSE:LT-EQ",
-        "NSE:AXISBANK-EQ",
-    ]
+NIFTY500 = [
+    "NSE:RELIANCE-EQ",
+    "NSE:TCS-EQ",
+    "NSE:HDFCBANK-EQ",
+    "NSE:ICICIBANK-EQ",
+    "NSE:INFY-EQ",
+    "NSE:SBIN-EQ",
+    "NSE:BHARTIARTL-EQ",
+    "NSE:ITC-EQ",
+    "NSE:LT-EQ",
+    "NSE:AXISBANK-EQ"
+]

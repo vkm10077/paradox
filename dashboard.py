@@ -16,10 +16,11 @@ def get_dashboard_data(client_id, access_token):
         "NSE:FINNIFTY-INDEX",
         "NSE:MIDCPNIFTY-INDEX",
         "NSE:INDIAVIX-INDEX",
-        "MCX:GOLDM",
-        "MCX:SILVERM",
-        "MCX:CRUDEOILM",
-        "MCX:NATURALGASM"
+        # "MCX:GOLDM",
+        # "MCX:SILVERM",
+        # "MCX:CRUDEOILM",
+        # "MCX:NATURALGASM",
+        "MCX:GOLDMIC26JULFUT",
     ]
 
     quotes = fyers.quotes({

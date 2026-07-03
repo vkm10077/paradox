@@ -87,10 +87,10 @@ def get_historical_df(fyers, symbol):
     return df
 
 
-def scan_nifty500(fyers, limit=50):
+def scan_nifty500(fyers, start=0, limit=50):
     results = []
 
-    for symbol in NIFTY500[:limit]:
+    for symbol in NIFTY500[start:start+limit]:
         try:
             df = get_historical_df(fyers, symbol)
 

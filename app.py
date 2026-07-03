@@ -155,7 +155,7 @@ def dashboard():
                     "prev_close": v.get("prev_close_price", 0),
                 })
                 
-    scanner_results = scan_nifty500(fyers)
+    scanner_results = scan_nifty500(fyers, limit=50)
     
     selected_signal = request.args.get("signal", "ALL")
 

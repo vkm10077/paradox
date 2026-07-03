@@ -178,6 +178,12 @@ def scan_nifty500(fyers, start=0, limit=50):
                 institutional_breakout = "YES"
 
             data["institutional_breakout"] = institutional_breakout
+            if (
+                score >= 80
+                and breakout == "STRONG"
+                and institutional_breakout == "YES"
+                and signal in ["BUY", "STRONG BUY"]
+             ):
 
             results.append(data)
 

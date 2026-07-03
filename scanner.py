@@ -111,6 +111,7 @@ def scan_nifty500(fyers):
                 pattern = "NA"
             support = round(df["low"].tail(20).min(), 2)
             resistance = round(df["high"].tail(20).max(), 2)
+            prev_resistance = round(df["high"].iloc[-21:-1].max(), 2)
             entry = resistance
 
             stoploss = support

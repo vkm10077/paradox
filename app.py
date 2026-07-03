@@ -155,11 +155,8 @@ def dashboard():
                     "prev_close": v.get("prev_close_price", 0),
                 })
                 
-    scanner_results = scan_nifty500(fyers)
-    # scanner_results = [
-    # stock for stock in scanner_results
-    #  if stock.get("score", 0) >= 70
-    # ]
+    scanner_results = []
+    
     selected_signal = request.args.get("signal", "ALL")
 
     if selected_signal != "ALL":

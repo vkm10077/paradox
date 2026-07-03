@@ -1,3 +1,4 @@
+import time
 from market import get_fyers
 from flask import Flask, render_template, redirect, request, session
 import os
@@ -155,7 +156,15 @@ def dashboard():
                     "prev_close": v.get("prev_close_price", 0),
                 })
                 
-    scanner_results = scan_nifty500(fyers, limit=50)
+    batch = (int(time.time() / 30) % 10)
+
+start = batch * 50
+
+scanner_results = scan_nifty500(
+    fyers,
+    start=start,
+    limit=50
+)
     
     selected_signal = request.args.get("signal", "ALL")
 

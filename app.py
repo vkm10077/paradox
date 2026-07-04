@@ -181,6 +181,14 @@ def dashboard():
     quotes = get_dashboard_data(CLIENT_ID, session["access_token"])
     print(quotes)
 
+    if not quotes or quotes.get("s") != "ok":
+        return f"""
+        <h2>FYERS Data Error</h2>
+        <pre>{quotes}</pre>
+        <br>
+        <a href="/login">Login Again with FYERS</a>
+        """
+
     rows = []
 
     if quotes.get("s") == "ok":

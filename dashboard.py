@@ -13,9 +13,6 @@ def get_dashboard_data(client_id, access_token):
         "NSE:NIFTY50-INDEX",
         "NSE:NIFTYBANK-INDEX",
         "BSE:SENSEX-INDEX",
-        "NSE:FINNIFTY-INDEX",
-        "NSE:MIDCPNIFTY-INDEX",
-        "NSE:INDIAVIX-INDEX",
         
     ]
 

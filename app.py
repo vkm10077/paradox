@@ -8,6 +8,7 @@ import pandas as pd
 from modules.scanner import scan_stock
 from dashboard import get_dashboard_data
 from scanner import scan_nifty500
+from scalping import generate_scalping_signal
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY")

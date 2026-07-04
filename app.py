@@ -238,6 +238,7 @@ def dashboard():
 
         if trade:
             scalping_trades.append(trade)
+            print("Scalping Trades:", scalping_trades)
 
     scalping_trades = scalping_trades[:3]
 

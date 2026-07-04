@@ -134,6 +134,41 @@
 <br><br>
 
 <div class="card">
+
+<h2>⚡ Live Scalping Signals</h2>
+
+<table>
+<tr>
+    <th>Index</th>
+    <th>Signal</th>
+    <th>Entry</th>
+    <th>SL</th>
+    <th>T1</th>
+    <th>T2</th>
+    <th>T3</th>
+    <th>Score</th>
+</tr>
+
+{% for trade in scalping_trades %}
+<tr>
+    <td>{{ trade.index }}</td>
+    <td>{{ trade.signal }}</td>
+    <td>{{ trade.entry }}</td>
+    <td>{{ trade.sl }}</td>
+    <td>{{ trade.target1 }}</td>
+    <td>{{ trade.target2 }}</td>
+    <td>{{ trade.target3 }}</td>
+    <td>{{ trade.score }}</td>
+</tr>
+{% endfor %}
+
+</table>
+
+</div>
+
+<br><br>   
+
+<div class="card">
     <h2>📈 NIFTY 500 Smart Scanner</h2>
     <form method="get" action="/dashboard">
 

@@ -94,6 +94,13 @@ def scan_nifty500(fyers, start=0, limit=50):
         try:
             df = get_historical_df(fyers, symbol)
 
+            print("Scanning:", symbol)
+            
+            if df is None:
+                print("No data:", symbol)
+            else:
+                print("Rows:", symbol, len(df))
+
             if df is None or len(df) < 60:
                 continue
 

@@ -130,6 +130,48 @@ pre {{
 </html>
 """
 
+def build_index_data(rows):
+    index_data = {}
+
+    for row in rows:
+        symbol = row.get("symbol", "").upper()
+
+        if "NIFTY" in symbol and "BANK" not in symbol:
+            index_name = "NIFTY"
+        elif "BANK" in symbol:
+            index_name = "BANKNIFTY"
+        elif "SENSEX" in symbol:
+            index_name = "SENSEX"
+        else:
+            continue
+
+        price = row.get("price", 0)
+        open_price = row.get("open", 0)
+        high = row.get("high", 0)
+        low = row.get("low", 0)
+        prev_close = row.get("prev_close", 0)
+
+        bullish = price > open_price and price > prev_close
+        bearish = price < open_price and price < prev_close
+
+        index_data[index_name] = {
+            "price": price,
+            "vwap": open_price,
+            "ema20": open_price,
+            "ema50": prev_close,
+            "supertrend": "BUY" if bullish else "SELL",
+            "rsi": 65 if bullish else 35,
+            "macd": "BULLISH" if bullish else "BEARISH",
+            "volume_spike": True if abs(row.get("change_pct", 0)) > 0.25 else False,
+            "oi_signal": "BULLISH" if bullish else "BEARISH",
+            "candle_pattern": "Bullish Marubozu" if bullish else "Bearish Marubozu",
+            "breakout": price >= high or price <= low,
+            "swing_low": low,
+            "swing_high": high
+        }
+
+    return index_data
+
 @app.route("/dashboard")
 def dashboard():
     if "access_token" not in session:
@@ -166,7 +208,19 @@ def dashboard():
         start=start,
         limit=50
     )
-    
+
+    index_data = build_index_data(rows)
+
+    scalping_trades = []
+
+    for index_name, data in index_data.items():
+        trade = generate_scalping_signal(index_name, data)
+
+        if trade:
+            scalping_trades.append(trade)
+
+    scalping_trades = scalping_trades[:3]
+
     selected_signal = request.args.get("signal", "ALL")
 
     if selected_signal != "ALL":
@@ -176,7 +230,8 @@ def dashboard():
         ]
     return render_template(
     "dashboard.html",
-        rows=rows,
-        scanner_results=scanner_results,
-        selected_signal=selected_signal
+    rows=rows,
+    scanner_results=scanner_results,
+    selected_signal=selected_signal,
+    scalping_trades=scalping_trades
 )

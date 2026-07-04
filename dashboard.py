@@ -10,9 +10,7 @@ def get_dashboard_data(client_id, access_token):
     )
 
     market_symbols = [
-        "NSE:NIFTY50-INDEX",
-        "NSE:NIFTYBANK-INDEX",
-        "BSE:SENSEX-INDEX",
+        "NSE:SBIN-EQ"
         
     ]
 

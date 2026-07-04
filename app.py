@@ -40,6 +40,15 @@ def callback():
 
     response = fyers_session.generate_token()
 
+    print("TOKEN RESPONSE:", response)
+
+    if response.get("s") != "ok":
+        return f"""
+        <h2>Token Error</h2>
+        <pre>{response}</pre>
+        <a href="/login">Login Again</a>
+        """
+
     access_token = response["access_token"]
 
     fyers = fyersModel.FyersModel(

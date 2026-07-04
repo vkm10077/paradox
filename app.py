@@ -217,6 +217,9 @@ def dashboard():
         limit=50
     )
 
+    print("Scanner Results:", scanner_results)
+    print("Total Stocks:", len(scanner_results))
+
     index_data = build_index_data(rows)
 
     scalping_trades = []

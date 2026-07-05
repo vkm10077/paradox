@@ -186,75 +186,42 @@
 <br>
 
     <table>
-        <tr>
-            <th>Stock</th>
-            <th>Price</th>
-            <th>RSI</th>
-            <th>EMA20</th>
-            <th>EMA50</th>
-            <th>EMA200</th>
-            <th>VWAP</th>
-            <th>Supertrend</th>
-            <th>Volume</th>
-            <th>Pattern</th>
-            <th>Support</th>
-            <th>Resistance</th>
-            <th>Entry</th>
-            <th>Stop Loss</th>
-            <th>Target 1</th>
-            <th>Target 2</th>
-            <th>Institutional</th>
-            <th>Score</th>
-            <th>Signal</th>
-        </tr>
+    <tr>
+        <th>Stock</th>
+        <th>Current Price</th>
+        <th>Technical Score</th>
+        <th>Fundamental Score</th>
+        <th>News</th>
+        <th>Entry</th>
+        <th>SL</th>
+        <th>Risk : Reward</th>
+        <th>Hold</th>
+        <th>Expected Move</th>
+        <th>BUY</th>
+    </tr>
 
-        {% for stock in scanner_results %}
-        <tr>
-            <td>{{ stock.symbol }}</td>
-            <td>{{ stock.price }}</td>
-            <td>{{ stock.rsi }}</td>
-            <td>{{ stock.ema20 }}</td>
-            <td>{{ stock.ema50 }}</td>
-            <td>{{ stock.ema200 }}</td>
-            <td>{{ stock.vwap }}</td>
-            <td>{{ stock.supertrend }}</td>
-            <td>{{ stock.volume_signal }}</td>
-            <td>{{ stock.pattern }}</td>
-            <td>{{ stock.support }}</td>
-            <td>{{ stock.resistance }}</td>
-            <td>{{ stock.entry }}</td>
-            <td>{{ stock.stoploss }}</td>
-            <td>{{ stock.target1 }}</td>
-            <td>{{ stock.target2 }}</td>
-            <td>{{ stock.score }}/100</td>
-            <td>
-            {% if stock.breakout == "STRONG" %}
-               <span class="green">🟢 STRONG</span>
-            {% elif stock.breakout == "WEAK" %}
-               <span style="color:orange;">🟡 WEAK</span>
-            {% else %}
-               <span class="red">🔴 NO</span>
-            {% endif %}
-            </td>
+    {% for stock in scanner_results %}
+    <tr>
+        <td>{{ stock.symbol }}</td>
+        <td>{{ stock.price }}</td>
+        <td>{{ stock.technical_score }}</td>
+        <td>{{ stock.fundamental_score }}</td>
+        <td>{{ stock.news }}</td>
+        <td>{{ stock.entry }}</td>
+        <td>{{ stock.sl }}</td>
+        <td>{{ stock.risk_reward }}</td>
+        <td>{{ stock.hold }}</td>
+        <td>{{ stock.expected_move }}</td>
+        <td class="green">{{ stock.signal }}</td>
+    </tr>
+    {% endfor %}
 
-            <td>
-            {% if stock.institutional_breakout == "YES" %}
-               🟢 YES
-            {% else %}
-               🔴 NO
-            {% endif %}
-            </td>
-
-            <td>
-            {% if "BUY" in stock.signal %}
-                <span class="green">{{ stock.signal }}</span>
-            {% else %}
-                <span class="red">{{ stock.signal }}</span>
-            {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    {% if scanner_results|length == 0 %}
+    <tr>
+        <td colspan="11">No High Probability BUY Setup</td>
+    </tr>
+    {% endif %}
+</table>
 </div>
     
 </body>

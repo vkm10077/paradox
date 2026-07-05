@@ -203,7 +203,8 @@
         <th>Risk : Reward</th>
         <th>Hold</th>
         <th>Expected Move</th>
-        <th>BUY</th>
+        <th>Status</th>
+        <th>Missing</th>
     </tr>
 
     {% for stock in scanner_results %}
@@ -218,7 +219,8 @@
         <td>{{ stock.risk_reward }}</td>
         <td>{{ stock.hold }}</td>
         <td>{{ stock.expected_move }}</td>
-        <td class="green">{{ stock.signal }}</td>
+        <td>{{ stock.status }}</td>
+        <td>{{ stock.missing }}</td>
     </tr>
     {% endfor %}
 

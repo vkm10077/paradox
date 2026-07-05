@@ -105,6 +105,22 @@ def scan_nifty500(fyers, start=0, limit=50):
                 continue
 
             price = round(df["close"].iloc[-1], 2)
+            trade = calculate_trade_levels(price)
+            fundamental_data = {
+                "roe": 18,
+                "roce": 20,
+                "debt_equity": 0.30,
+                "promoter_holding": 55,
+                "sales_growth": 15,
+                "profit_growth": 18,
+                "eps_growth": 14,
+                "cash_flow_positive": True,
+                "fii_dii_positive": True
+            }
+
+            fundamental_score = calculate_fundamental_score(fundamental_data)
+
+            news_impact = get_news_impact(symbol)
             rsi = calculate_rsi(df)
             ema20 = calculate_ema(df, 20)
             ema50 = calculate_ema(df, 50)
@@ -144,21 +160,23 @@ def scan_nifty500(fyers, start=0, limit=50):
                 "rsi": rsi,
                 "ema20": ema20,
                 "ema50": ema50,
-                "ema200": ema200,
                 "vwap": vwap,
                 "supertrend": supertrend,
                 "volume_signal": volume_signal,
                 "pattern": pattern,
-                "support": support,
-                "resistance": resistance,
-                "entry": entry,
                 "stoploss": stoploss,
-                "target1": target1,
-                "target2": target2,
-                "breakout": breakout 
+                "breakout": breakout,
+                "fundamental_score": fundamental_score,
+                "news": news_impact,
+                "entry": trade["entry"],
+                "sl": trade["sl"],
+                "risk_reward": trade["risk_reward"],
+                "hold": trade["hold"],
+                "expected_move": trade["expected_move"],
             }
 
             score = calculate_smart_score(data)
+            data["technical_score"] = score
             signal = get_signal(score)
 
             # Strong Breakout Confirmation
@@ -172,27 +190,19 @@ def scan_nifty500(fyers, start=0, limit=50):
             data["score"] = score
             data["signal"] = signal
 
-            institutional_breakout = "NO"
-
             if (
                 price > ema20
                 and price > ema50
-                and price > ema200
                 and rsi >= 55
                 and volume_signal in ["HIGH", "NORMAL"]
                 and score >= 70
+                and fundamental_score >= 70
+                and news_impact != "Negative"
+                and trade["hold"] != "Avoid"
+                and signal in ["BUY", "STRONG BUY"]
             ):
-                institutional_breakout = "YES"
-
-            data["institutional_breakout"] = institutional_breakout
-            if (
-                 score >= 70
-                 and breakout == "STRONG"
-                 and institutional_breakout == "YES"
-                 and signal in ["BUY", "STRONG BUY"]
-             ):
-
-                 results.append(data)
+                data["signal"] = "BUY"
+                results.append(data)
 
         except Exception:
             continue

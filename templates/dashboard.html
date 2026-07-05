@@ -25,24 +25,30 @@
 
         table {
             width: 100%;
-            min-width: 1200px;
-            font-size: 12px
+            table-layout: fixed;
             border-collapse: collapse;
             background: #020617;
             border-radius: 12px;
             overflow: hidden;
-        }
+            font-size: 11px;
+        } 
 
         th {
             background: #1e293b;
             color: #e5e7eb;
-            padding: 8px;
+            padding: 5px;
+            font-size: 11px;
+            white-space: nowrap;
         }
 
         td {
-            padding: 8px;
+            padding: 5px;
             text-align: center;
             border-bottom: 1px solid #334155;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 11px;
         }
 
         .green {

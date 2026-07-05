@@ -190,18 +190,43 @@ def scan_nifty500(fyers, start=0, limit=50):
             data["score"] = score
             data["signal"] = signal
 
-            if (
-                price > ema20
-                and price > ema50
-                and rsi >= 55
-                and volume_signal in ["HIGH", "NORMAL"]
-                and score >= 70
-                and fundamental_score >= 70
-                and news_impact != "Negative"
-                and trade["hold"] != "Avoid"
-                and signal in ["BUY", "STRONG BUY"]
-            ):
-                data["signal"] = "BUY"
+            missing_conditions = []
+
+            if price <= ema20:
+                missing_conditions.append("Price below EMA20")
+
+            if price <= ema50:
+                missing_conditions.append("Price below EMA50")
+
+            if rsi < 55:
+                missing_conditions.append("RSI < 55")
+
+            if volume_signal not in ["HIGH", "NORMAL"]:
+                missing_conditions.append("Volume Low")
+
+            if score < 70:
+                missing_conditions.append("Tech Score < 70")
+
+            if fundamental_score < 70:
+                missing_conditions.append("Fund Score < 70")
+
+            if news_impact == "Negative":
+                missing_conditions.append("News Negative")
+
+            if trade["hold"] == "Avoid":
+                missing_conditions.append("R:R Weak")
+
+            if signal not in ["BUY", "STRONG BUY"]:
+                missing_conditions.append("Signal Not BUY")
+
+            if len(missing_conditions) == 0:
+                data["status"] = "BUY"
+                data["missing"] = "All OK"
+                results.append(data)
+
+            elif len(missing_conditions) <= 3:
+                data["status"] = "WATCH"
+                data["missing"] = ", ".join(missing_conditions)
                 results.append(data)
 
         except Exception:

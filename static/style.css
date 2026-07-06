@@ -27,3 +27,40 @@ th{
 tr:nth-child(even){
     background:#1a2233;
 }
+
+.green{
+    color:#22c55e;
+    font-weight:bold;
+}
+
+.red{
+    color:#ef4444;
+    font-weight:bold;
+}
+
+.buy{
+    background:#14532d;
+    color:#4ade80;
+    font-weight:bold;
+    padding:4px 10px;
+    border-radius:6px;
+    display:inline-block;
+}
+
+.sell{
+    background:#7f1d1d;
+    color:#f87171;
+    font-weight:bold;
+    padding:4px 10px;
+    border-radius:6px;
+    display:inline-block;
+}
+
+.wait{
+    background:#78350f;
+    color:#facc15;
+    font-weight:bold;
+    padding:4px 10px;
+    border-radius:6px;
+    display:inline-block;
+}

@@ -46,29 +46,27 @@ def scalping_score(data):
 
 
 def generate_scalping_signal(index_name, data):
-    global daily_trade_count
+    buy_conditions = {
+        "Price > VWAP": data["price"] > data["vwap"],
+        "EMA20 > EMA50": data["ema20"] > data["ema50"],
+        "Supertrend BUY": data["supertrend"] == "BUY",
+        "RSI 55-70": 55 <= data["rsi"] <= 70,
+        "MACD Bullish": data["macd"] == "BULLISH",
+        "Volume Spike": data["volume_spike"] == True,
+        "OI Bullish": data["oi_signal"] == "BULLISH",
+        "Breakout": data["breakout"] == True
+    }
 
-    current_time = datetime.now().time()
+    passed = sum(buy_conditions.values())
+    missing = [k for k, v in buy_conditions.items() if not v]
 
-    allowed_time = (
-        current_time >= datetime.strptime("09:20", "%H:%M").time()
-        and current_time <= datetime.strptime("15:10", "%H:%M").time()
-    )
-
-    if not allowed_time:
-        return None
-
-    if daily_trade_count[index_name] >= MAX_TRADES_PER_DAY:
-        return None
-
-    score = scalping_score(data)
-
-    if score >= 85:
-        daily_trade_count[index_name] += 1
-
+    if passed >= 6:
         entry = data["price"]
         sl = data["swing_low"]
+
         risk = entry - sl
+        if risk <= 0:
+            return None
 
         return {
             "index": index_name,
@@ -78,8 +76,18 @@ def generate_scalping_signal(index_name, data):
             "target1": round(entry + risk, 2),
             "target2": round(entry + risk * 2, 2),
             "target3": round(entry + risk * 3, 2),
-            "score": score,
-            "reason": "VWAP + EMA + RSI + Volume + OI + Breakout confirmed"
+            "score": passed * 12.5,
+            "missing": ", ".join(missing[:2])
         }
 
-    return None
+    return {
+        "index": index_name,
+        "signal": "WAIT",
+        "entry": data["price"],
+        "sl": "-",
+        "target1": "-",
+        "target2": "-",
+        "target3": "-",
+        "score": passed * 12.5,
+        "missing": ", ".join(missing[:2])
+    }

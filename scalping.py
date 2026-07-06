@@ -44,6 +44,23 @@ def scalping_score(data):
 
     return score
 
+def get_option_details(index_name, signal, index_price):
+    step = 100 if index_name in ["BANKNIFTY", "SENSEX"] else 50
+
+    atm_strike = round(index_price / step) * step
+
+    if signal == "BUY":
+        option_type = "CE"
+        strike = atm_strike
+    elif signal == "SELL":
+        option_type = "PE"
+        strike = atm_strike
+    else:
+        option_type = "-"
+        strike = "-"
+
+    return strike, option_type
+
 
 def generate_scalping_signal(index_name, data):
     buy_conditions = {
@@ -60,34 +77,53 @@ def generate_scalping_signal(index_name, data):
     passed = sum(buy_conditions.values())
     missing = [k for k, v in buy_conditions.items() if not v]
 
+    confidence = round((passed / len(buy_conditions)) * 100, 2)
+
     if passed >= 6:
-        entry = data["price"]
-        sl = data["swing_low"]
+        signal = "BUY"
+        index_price = data["price"]
+
+        strike, option_type = get_option_details(index_name, signal, index_price)
+
+        # अभी premium live option-chain से नहीं आ रहा,
+        # temporary estimate है। बाद में FYERS option-chain से live करेंगे।
+        premium = round(index_price * 0.0075, 2)
+
+        entry = premium
+        sl = round(entry * 0.85, 2)
 
         risk = entry - sl
-        if risk <= 0:
-            return None
 
         return {
             "index": index_name,
-            "signal": "BUY",
+            "strike": strike,
+            "option_type": option_type,
+            "premium": premium,
+            "signal": signal,
             "entry": round(entry, 2),
-            "sl": round(sl, 2),
+            "sl": sl,
             "target1": round(entry + risk, 2),
             "target2": round(entry + risk * 2, 2),
             "target3": round(entry + risk * 3, 2),
-            "score": passed * 12.5,
+            "max_target": round(entry + risk * 4, 2),
+            "score": round(passed * 12.5, 2),
+            "confidence": confidence,
             "missing": ", ".join(missing[:2])
         }
 
     return {
         "index": index_name,
+        "strike": "-",
+        "option_type": "-",
+        "premium": "-",
         "signal": "WAIT",
-        "entry": data["price"],
+        "entry": "-",
         "sl": "-",
         "target1": "-",
         "target2": "-",
         "target3": "-",
-        "score": passed * 12.5,
+        "max_target": "-",
+        "score": round(passed * 12.5, 2),
+        "confidence": confidence,
         "missing": ", ".join(missing[:2])
     }

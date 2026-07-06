@@ -153,6 +153,7 @@
     <th>T2</th>
     <th>T3</th>
     <th>Score</th>
+    <th>Missing</th>
 </tr>
 
 {% for trade in scalping_trades %}
@@ -165,6 +166,7 @@
     <td>{{ trade.target2 }}</td>
     <td>{{ trade.target3 }}</td>
     <td>{{ trade.score }}</td>
+    <td>{{ trade.missing }}</td>
 </tr>
 {% endfor %}
 

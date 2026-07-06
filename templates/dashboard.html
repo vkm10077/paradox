@@ -146,28 +146,36 @@
 <table>
 <tr>
     <th>Index</th>
-    <th>Signal</th>
     <th>Entry</th>
+    <th>Premium</th>
     <th>SL</th>
     <th>T1</th>
     <th>T2</th>
     <th>T3</th>
     <th>Score</th>
+    <th>Confidence</th>
     <th>Missing</th>
+    <th>Signal</th>
 </tr>
 
 {% for trade in scalping_trades %}
 <tr>
     <td>{{ trade.index }}</td>
-    <td>{{ trade.signal }}</td>
     <td>{{ trade.entry }}</td>
+    <td>{{ trade.premium }}</td>
     <td>{{ trade.sl }}</td>
     <td>{{ trade.target1 }}</td>
     <td>{{ trade.target2 }}</td>
     <td>{{ trade.target3 }}</td>
     <td>{{ trade.score }}</td>
+    <td>{{ trade.confidence }}%</td>
     <td>{{ trade.missing }}</td>
+
+    <td class="{% if trade.signal == 'BUY' %}green{% elif trade.signal == 'SELL' %}red{% endif %}">
+        <b>{{ trade.signal }}</b>
+    </td>
 </tr>
+
 {% endfor %}
 
 </table>

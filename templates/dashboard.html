@@ -268,4 +268,12 @@
 </div>
     
 </body>
+{% if fyers_error %}
+<div class="card">
+    <h2 class="red">FYERS Data Error</h2>
+    <pre>{{ fyers_error }}</pre>
+    <a href="/login">Login Again with FYERS</a>
+</div>
+{% endif %}
+    
 </html>

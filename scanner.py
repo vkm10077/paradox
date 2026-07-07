@@ -234,6 +234,11 @@ def scan_nifty500(fyers, start=0, limit=50, symbols=None):
                 data["missing"] = ", ".join(missing_conditions)
                 results.append(data)
 
+            elif symbols:
+                data["status"] = "AVOID"
+                data["missing"] = ", ".join(missing_conditions)
+                results.append(data)
+
         except Exception:
             continue
 

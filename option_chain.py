@@ -31,8 +31,18 @@ def get_atm_itm(index_name, spot_price, signal):
 def get_live_option_premium(fyers, index_name, spot_price, signal):
     strike, option_type = get_atm_itm(index_name, spot_price, signal)
 
-    # अभी fallback premium रहेगा, ताकि dashboard crash न हो
-    premium = round(spot_price * 0.0075, 2)
+    premium = 0
+
+    if fyers is not None:
+        try:
+            # अभी FYERS live option symbol format add करना बाकी है
+            # इसलिए crash रोकने के लिए fallback रखा है
+            premium = round(spot_price * 0.0075, 2)
+        except Exception as e:
+            print("OPTION PREMIUM ERROR:", e)
+            premium = round(spot_price * 0.0075, 2)
+    else:
+        premium = round(spot_price * 0.0075, 2)
 
     return {
         "strike": strike,

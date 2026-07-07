@@ -23,7 +23,7 @@ def get_atm_itm_strike(index_name, spot_price, signal):
     return strike, option_type
 
 
-def generate_scalping_signal(index_name, data):
+def generate_scalping_signal(index_name, data, fyers=None):
     price = data.get("price", 0)
     vwap = data.get("vwap", 0)
     ema20 = data.get("ema20", 0)
@@ -79,7 +79,7 @@ def generate_scalping_signal(index_name, data):
 
     strike, option_type = get_atm_itm_strike(index_name, price, signal)
 
-    option_data = get_live_option_premium(None, index_name, price, signal)
+    option_data = get_live_option_premium(fyers, index_name, price, signal)
 
     strike = option_data["strike"]
     option_type = option_data["option_type"]

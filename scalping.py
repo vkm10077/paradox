@@ -1,3 +1,5 @@
+from option_chain import get_live_option_premium
+
 def get_atm_itm_strike(index_name, spot_price, signal):
     if index_name == "NIFTY":
         step = 50

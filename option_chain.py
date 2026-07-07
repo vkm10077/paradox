@@ -6,13 +6,13 @@ def get_step(index_name):
     return 50
 
 
-def get_symbol_prefix(index_name):
+def get_index_symbol(index_name):
     if index_name == "NIFTY":
-        return "NIFTY"
+        return "NSE:NIFTY50-INDEX"
     elif index_name == "BANKNIFTY":
-        return "BANKNIFTY"
+        return "NSE:NIFTYBANK-INDEX"
     elif index_name == "SENSEX":
-        return "SENSEX"
+        return "BSE:SENSEX-INDEX"
     return index_name
 
 
@@ -21,9 +21,9 @@ def get_atm_itm(index_name, spot_price, signal):
     atm = round(spot_price / step) * step
 
     if signal == "BUY":
-        return atm - step, "CE"
+        return atm - step, "CE"     # ITM CE
     elif signal == "SELL":
-        return atm + step, "PE"
+        return atm + step, "PE"     # ITM PE
     else:
         return atm, "CE"
 
@@ -31,18 +31,43 @@ def get_atm_itm(index_name, spot_price, signal):
 def get_live_option_premium(fyers, index_name, spot_price, signal):
     strike, option_type = get_atm_itm(index_name, spot_price, signal)
 
-    premium = 0
+    premium = round(spot_price * 0.0075, 2)
 
-    if fyers is not None:
-        try:
-            # अभी FYERS live option symbol format add करना बाकी है
-            # इसलिए crash रोकने के लिए fallback रखा है
-            premium = round(spot_price * 0.0075, 2)
-        except Exception as e:
-            print("OPTION PREMIUM ERROR:", e)
-            premium = round(spot_price * 0.0075, 2)
-    else:
-        premium = round(spot_price * 0.0075, 2)
+    if fyers is None:
+        return {
+            "strike": strike,
+            "option_type": option_type,
+            "premium": premium
+        }
+
+    try:
+        data = {
+            "symbol": get_index_symbol(index_name),
+            "strikecount": 3,
+            "timestamp": ""
+        }
+
+        response = fyers.optionchain(data=data)
+
+        print("OPTION CHAIN RESPONSE:", response)
+
+        chain = (
+            response.get("data", {}).get("optionsChain")
+            or response.get("data", {}).get("optionChain")
+            or []
+        )
+
+        for item in chain:
+            item_strike = int(float(item.get("strike_price", 0)))
+            item_type = item.get("option_type", "")
+
+            if item_strike == strike and item_type == option_type:
+                premium = item.get("ltp", item.get("lp", premium))
+                premium = round(float(premium), 2)
+                break
+
+    except Exception as e:
+        print("OPTION CHAIN ERROR:", e)
 
     return {
         "strike": strike,

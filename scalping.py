@@ -79,7 +79,11 @@ def generate_scalping_signal(index_name, data):
 
     strike, option_type = get_atm_itm_strike(index_name, price, signal)
 
-    premium = round(price * 0.0075, 2)  # temporary estimate
+    option_data = get_live_option_premium(None, index_name, price, signal)
+
+    strike = option_data["strike"]
+    option_type = option_data["option_type"]
+    premium = option_data["premium"]
 
     return {
         "index": index_name,

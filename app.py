@@ -1,3 +1,4 @@
+from nifty500 import NIFTY500
 import time
 from market import get_fyers
 from flask import Flask, render_template, redirect, request, session
@@ -183,6 +184,31 @@ def build_index_data(rows):
         }
 
     return index_data
+
+def scan_single_stock_from_nifty500(fyers, search_stock):
+    search_stock = search_stock.upper().strip()
+
+    matched_symbol = None
+
+    for symbol in NIFTY500:
+        clean_symbol = symbol.replace("NSE:", "").replace("-EQ", "").upper()
+
+        if search_stock == clean_symbol or search_stock in clean_symbol:
+            matched_symbol = symbol
+            break
+
+    if not matched_symbol:
+        return None
+
+    result = scan_nifty500(
+        fyers,
+        symbols=[matched_symbol]
+    )
+
+    if result and len(result) > 0:
+        return result[0]
+
+    return None
 
 @app.route("/dashboard")
 def dashboard():

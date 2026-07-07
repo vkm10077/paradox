@@ -254,6 +254,7 @@ def dashboard():
             "missing": trade.get("missing", "-"),
             "signal": trade.get("signal", "BUY")
         })
+    
 
     print("INDEX DATA:", index_data)
     print("SCALPING TRADES:", scalping_trades)

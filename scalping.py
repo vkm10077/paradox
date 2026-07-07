@@ -1,129 +1,95 @@
-from datetime import datetime
+def get_atm_itm_strike(index_name, spot_price, signal):
+    if index_name == "NIFTY":
+        step = 50
+    elif index_name in ["BANKNIFTY", "SENSEX"]:
+        step = 100
+    else:
+        step = 50
 
-daily_trade_count = {
-    "NIFTY": 0,
-    "BANKNIFTY": 0,
-    "SENSEX": 0
-}
-
-MAX_TRADES_PER_DAY = 3
-
-
-def scalping_score(data):
-    score = 0
-
-    if data["price"] > data["vwap"]:
-        score += 10
-
-    if data["price"] > data["ema20"]:
-        score += 10
-
-    if data["ema20"] > data["ema50"]:
-        score += 10
-
-    if data["supertrend"] == "BUY":
-        score += 10
-
-    if 60 <= data["rsi"] <= 75:
-        score += 10
-
-    if data["macd"] == "BULLISH":
-        score += 10
-
-    if data["volume_spike"] == True:
-        score += 10
-
-    if data["oi_signal"] == "BULLISH":
-        score += 10
-
-    if data["candle_pattern"] in ["Bullish Engulfing", "Hammer", "Morning Star", "Bullish Marubozu"]:
-        score += 10
-
-    if data["breakout"] == True:
-        score += 10
-
-    return score
-
-def get_option_details(index_name, signal, index_price):
-    step = 100 if index_name in ["BANKNIFTY", "SENSEX"] else 50
-
-    atm_strike = round(index_price / step) * step
+    atm = round(spot_price / step) * step
 
     if signal == "BUY":
+        strike = atm - step      # ITM CE
         option_type = "CE"
-        strike = atm_strike
     elif signal == "SELL":
+        strike = atm + step      # ITM PE
         option_type = "PE"
-        strike = atm_strike
     else:
-        option_type = "-"
-        strike = "-"
+        strike = atm
+        option_type = "CE"
 
     return strike, option_type
 
 
 def generate_scalping_signal(index_name, data):
-    buy_conditions = {
-        "Price > VWAP": data["price"] > data["vwap"],
-        "EMA20 > EMA50": data["ema20"] > data["ema50"],
-        "Supertrend BUY": data["supertrend"] == "BUY",
-        "RSI 55-70": 55 <= data["rsi"] <= 70,
-        "MACD Bullish": data["macd"] == "BULLISH",
-        "Volume Spike": data["volume_spike"] == True,
-        "OI Bullish": data["oi_signal"] == "BULLISH",
-        "Breakout": data["breakout"] == True
-    }
+    price = data.get("price", 0)
+    vwap = data.get("vwap", 0)
+    ema20 = data.get("ema20", 0)
+    ema50 = data.get("ema50", 0)
+    supertrend = data.get("supertrend", "")
+    rsi = data.get("rsi", 50)
+    macd = data.get("macd", "")
+    volume_spike = data.get("volume_spike", False)
+    breakout = data.get("breakout", False)
 
-    passed = sum(buy_conditions.values())
-    missing = [k for k, v in buy_conditions.items() if not v]
+    score = 0
+    missing = []
 
-    confidence = round((passed / len(buy_conditions)) * 100, 2)
+    if price > vwap:
+        score += 15
+    else:
+        missing.append("VWAP")
 
-    if passed >= 6:
+    if ema20 >= ema50:
+        score += 15
+    else:
+        missing.append("EMA")
+
+    if supertrend == "BUY":
+        score += 20
+    else:
+        missing.append("Supertrend")
+
+    if rsi >= 55:
+        score += 15
+    else:
+        missing.append("RSI")
+
+    if macd == "BULLISH":
+        score += 15
+    else:
+        missing.append("MACD")
+
+    if volume_spike:
+        score += 10
+    else:
+        missing.append("Volume")
+
+    if breakout:
+        score += 10
+    else:
+        missing.append("Breakout")
+
+    if score >= 70:
         signal = "BUY"
-        index_price = data["price"]
+    else:
+        signal = "WATCHLIST"
 
-        strike, option_type = get_option_details(index_name, signal, index_price)
+    strike, option_type = get_atm_itm_strike(index_name, price, signal)
 
-        # अभी premium live option-chain से नहीं आ रहा,
-        # temporary estimate है। बाद में FYERS option-chain से live करेंगे।
-        premium = round(index_price * 0.0075, 2)
-
-        entry = premium
-        sl = round(entry * 0.85, 2)
-
-        risk = entry - sl
-
-        return {
-            "index": index_name,
-            "strike": strike,
-            "option_type": option_type,
-            "premium": premium,
-            "signal": signal,
-            "entry": round(entry, 2),
-            "sl": sl,
-            "target1": round(entry + risk, 2),
-            "target2": round(entry + risk * 2, 2),
-            "target3": round(entry + risk * 3, 2),
-            "max_target": round(entry + risk * 4, 2),
-            "score": round(passed * 12.5, 2),
-            "confidence": confidence,
-            "missing": ", ".join(missing[:2])
-        }
+    premium = round(price * 0.0075, 2)  # temporary estimate
 
     return {
         "index": index_name,
-        "strike": "-",
-        "option_type": "-",
-        "premium": "-",
-        "signal": "WAIT",
-        "entry": "-",
-        "sl": "-",
-        "target1": "-",
-        "target2": "-",
-        "target3": "-",
-        "max_target": "-",
-        "score": round(passed * 12.5, 2),
-        "confidence": confidence,
-        "missing": ", ".join(missing[:2])
+        "strike": strike,
+        "option_type": option_type,
+        "premium": premium,
+        "entry": premium,
+        "sl": round(premium * 0.85, 2),
+        "t1": round(premium * 1.15, 2),
+        "t2": round(premium * 1.30, 2),
+        "t3": round(premium * 1.45, 2),
+        "confidence": score,
+        "missing": ", ".join(missing) if missing else "All OK",
+        "signal": signal
     }

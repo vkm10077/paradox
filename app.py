@@ -327,6 +327,44 @@ def dashboard():
     searched_stock=searched_stock    
 )
 
+@app.route("/api/scalping")
+def api_scalping():
+    if "access_token" not in session:
+        return {"error": "login required"}
+
+    fyers = get_fyers(CLIENT_ID, session["access_token"])
+    quotes = get_dashboard_data(CLIENT_ID, session["access_token"])
+
+    rows = []
+
+    if quotes and quotes.get("s") == "ok":
+        for item in quotes.get("d", []):
+            v = item.get("v", {})
+
+            if item.get("s") == "ok":
+                rows.append({
+                    "symbol": v.get("short_name", item.get("n")),
+                    "price": v.get("lp", 0),
+                    "change": v.get("ch", 0),
+                    "change_pct": v.get("chp", 0),
+                    "high": v.get("high_price", 0),
+                    "low": v.get("low_price", 0),
+                    "open": v.get("open_price", 0),
+                    "prev_close": v.get("prev_close_price", 0),
+                })
+
+    index_data = build_index_data(rows)
+
+    scalping_trades = []
+
+    for index_name, data in index_data.items():
+        trade = generate_scalping_signal(index_name, data, fyers)
+
+        if trade:
+            scalping_trades.append(trade)
+
+    return {"scalping_trades": scalping_trades[:3]}
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)

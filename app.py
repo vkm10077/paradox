@@ -272,7 +272,7 @@ def dashboard():
     scalping_trades = []
 
     for index_name, data in index_data.items():
-        trade = generate_scalping_signal(index_name, data)
+        trade = generate_scalping_signal(index_name, data, fyers)
 
         if trade:
             scalping_trades.append({

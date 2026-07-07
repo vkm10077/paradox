@@ -217,7 +217,7 @@ def dashboard():
 
     fyers = get_fyers(CLIENT_ID, session["access_token"])
     quotes = get_dashboard_data(CLIENT_ID, session["access_token"])
-    print(quotes)
+    print("QUOTES RESPONSE:", quotes)
 
     if not quotes or quotes.get("s") != "ok":
         rows = []

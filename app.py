@@ -219,13 +219,11 @@ def dashboard():
     quotes = get_dashboard_data(CLIENT_ID, session["access_token"])
     print("QUOTES RESPONSE:", quotes)
 
+    fyers_error = None
+
     if not quotes or quotes.get("s") != "ok":
-        rows = []
-        scanner_results = []
-        scalping_trades = []
-        selected_signal = request.args.get("signal", "ALL")
-        search_stock = request.args.get("stock", "").upper().strip()
-        searched_stock = None
+        fyers_error = quotes
+        quotes = {"s": "ok", "d": []}
 
         return render_template(
             "dashboard.html",
@@ -235,7 +233,7 @@ def dashboard():
             scalping_trades=scalping_trades,
             search_stock=search_stock,
             searched_stock=searched_stock,
-            fyers_error=quotes
+            fyers_error=fyers_error
         )
 
     rows = []

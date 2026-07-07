@@ -196,7 +196,36 @@
 </form>
 
 <br>
+        <form method="GET" action="/dashboard" style="margin-bottom:15px;">
+        <input
+            type="text"
+            name="stock"
+            placeholder="Search NIFTY 500 Stock..."
+            value="{{ search_stock }}"
+            style="padding:8px;width:250px;"
+        >
 
+        <button type="submit">
+            Search
+        </button>
+    </form>
+
+    {% if searched_stock %}
+    <div class="card">
+        <h3>🔍 {{ searched_stock.symbol }}</h3>
+
+        <p><b>Current Price:</b> {{ searched_stock.price }}</p>
+        <p><b>Technical Score:</b> {{ searched_stock.technical_score }}</p>
+        <p><b>Fundamental Score:</b> {{ searched_stock.fundamental_score }}</p>
+        <p><b>News:</b> {{ searched_stock.news }}</p>
+        <p><b>Entry:</b> {{ searched_stock.entry }}</p>
+        <p><b>SL:</b> {{ searched_stock.sl }}</p>
+        <p><b>Risk Reward:</b> {{ searched_stock.risk_reward }}</p>
+        <p><b>Status:</b> {{ searched_stock.status }}</p>
+        <p><b>Missing:</b> {{ searched_stock.missing }}</p>
+    </div>
+    {% endif %}
+   
     <table>
     <tr>
         <th>Stock</th>

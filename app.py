@@ -220,23 +220,23 @@ def dashboard():
     print(quotes)
 
     if not quotes or quotes.get("s") != "ok":
-    rows = []
-    scanner_results = []
-    scalping_trades = []
-    selected_signal = request.args.get("signal", "ALL")
-    search_stock = request.args.get("stock", "").upper().strip()
-    searched_stock = None
+        rows = []
+        scanner_results = []
+        scalping_trades = []
+        selected_signal = request.args.get("signal", "ALL")
+        search_stock = request.args.get("stock", "").upper().strip()
+        searched_stock = None
 
-    return render_template(
-        "dashboard.html",
-        rows=rows,
-        scanner_results=scanner_results,
-        selected_signal=selected_signal,
-        scalping_trades=scalping_trades,
-        search_stock=search_stock,
-        searched_stock=searched_stock,
-        fyers_error=quotes
-    )
+        return render_template(
+            "dashboard.html",
+            rows=rows,
+            scanner_results=scanner_results,
+            selected_signal=selected_signal,
+            scalping_trades=scalping_trades,
+            search_stock=search_stock,
+            searched_stock=searched_stock,
+            fyers_error=quotes
+        )
 
     rows = []
 

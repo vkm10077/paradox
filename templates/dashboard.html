@@ -157,6 +157,7 @@
     <th>Signal</th>
 </tr>
 
+<tbody id="scalping-body">
 {% for s in scalping_trades %}
 <tr>
     <td>{{ s.index }}</td>
@@ -172,6 +173,7 @@
     <td class="green">{{ s.signal }}</td>
 </tr>
 {% endfor %}
+</tbody>
 
 </table>
 

@@ -237,10 +237,23 @@ def dashboard():
     scalping_trades = []
 
     for index_name, data in index_data.items():
-        trade = generate_scalping_signal(index_name, data)
+    trade = generate_scalping_signal(index_name, data)
 
-        if trade:
-            scalping_trades.append(trade)
+    if trade:
+        scalping_trades.append({
+            "index": trade.get("index", index_name),
+            "strike": trade.get("strike", "-"),
+            "option_type": trade.get("option_type", "-"),
+            "premium": trade.get("premium", trade.get("entry", 0)),
+            "entry": trade.get("entry", trade.get("premium", 0)),
+            "sl": trade.get("sl", 0),
+            "t1": trade.get("t1", 0),
+            "t2": trade.get("t2", 0),
+            "t3": trade.get("t3", 0),
+            "confidence": trade.get("confidence", 0),
+            "missing": trade.get("missing", "-"),
+            "signal": trade.get("signal", "BUY")
+        })
 
     print("INDEX DATA:", index_data)
     print("SCALPING TRADES:", scalping_trades)

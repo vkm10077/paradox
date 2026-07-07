@@ -261,19 +261,35 @@ def dashboard():
 
     scalping_trades = scalping_trades[:3]
 
+    search_stock = request.args.get("stock", "").upper().strip()
     selected_signal = request.args.get("signal", "ALL")
 
-    if selected_signal != "ALL":
+    if selected_signal != "ALL":   
         scanner_results = [
             stock for stock in scanner_results
             if stock.get("signal") == selected_signal
         ]
+
+    searched_stock = None
+
+    if search_stock:
+        searched_stock = next(
+            (
+                stock
+                for stock in scanner_results
+                if search_stock in stock.get("stock", "").upper()
+            ),
+            None
+        )
+        
     return render_template(
     "dashboard.html",
     rows=rows,
     scanner_results=scanner_results,
     selected_signal=selected_signal,
-    scalping_trades=scalping_trades
+    scalping_trades=scalping_trades,
+    search_stock=search_stock,
+    searched_stock=searched_stock    
 )
 
 if __name__ == "__main__":

@@ -172,7 +172,6 @@ def scan_nifty500(fyers, start=0, limit=50, symbols=None):
                 "stoploss": stoploss,
                 "breakout": breakout,
                 "fundamental_score": fundamental_score,
-                "news": news_impact,
                 "entry": trade["entry"],
                 "sl": trade["sl"],
                 "risk_reward": trade["risk_reward"],
@@ -215,8 +214,6 @@ def scan_nifty500(fyers, start=0, limit=50, symbols=None):
             if fundamental_score < 70:
                 missing_conditions.append("Fund Score < 70")
 
-            if news_impact == "Negative":
-                missing_conditions.append("News Negative")
 
             if trade["hold"] == "Avoid":
                 missing_conditions.append("R:R Weak")

@@ -13,6 +13,83 @@ from smart_score import calculate_smart_score, get_signal
 from fundamental import calculate_fundamental_score
 from risk_reward import calculate_trade_levels
 
+def calculate_technical_score_70(
+    price,
+    rsi,
+    ema20,
+    ema50,
+    ema200,
+    vwap,
+    supertrend,
+    volume_signal,
+    breakout,
+    pattern
+):
+    score = 0
+
+    # 1. Price EMA20 के ऊपर — 7 marks
+    if price > ema20:
+        score += 7
+
+    # 2. Price EMA50 के ऊपर — 7 marks
+    if price > ema50:
+        score += 7
+
+    # 3. Price EMA200 के ऊपर — 7 marks
+    if price > ema200:
+        score += 7
+
+    # 4. Strong EMA alignment — 7 marks
+    if ema20 > ema50 > ema200:
+        score += 7
+
+    # 5. RSI Momentum — Maximum 8 marks
+    if 55 <= rsi <= 70:
+        score += 8
+    elif 50 <= rsi < 55:
+        score += 4
+    elif 70 < rsi <= 75:
+        score += 4
+
+    # 6. Price VWAP के ऊपर — 6 marks
+    if price > vwap:
+        score += 6
+
+    # 7. Supertrend bullish — 8 marks
+    supertrend_text = str(supertrend).upper()
+
+    if supertrend_text in ["BUY", "BULLISH", "UP", "GREEN"]:
+        score += 8
+
+    # 8. Volume strength — Maximum 7 marks
+    volume_text = str(volume_signal).upper()
+
+    if volume_text == "HIGH":
+        score += 7
+    elif volume_text == "NORMAL":
+        score += 3
+
+    # 9. Breakout confirmation — Maximum 7 marks
+    if breakout == "STRONG":
+        score += 7
+    elif breakout == "WEAK":
+        score += 3
+
+    # 10. Bullish candlestick pattern — 6 marks
+    bullish_patterns = [
+        "HAMMER",
+        "BULLISH ENGULFING",
+        "MORNING STAR",
+        "PIERCING PATTERN",
+        "BULLISH HARAMI",
+        "MARUBOZU"
+    ]
+
+    if str(pattern).upper() in bullish_patterns:
+        score += 6
+
+    return min(score, 70)
+
 def detect_pattern(df):
     last = df.iloc[-1]
     prev = df.iloc[-2]
@@ -180,19 +257,32 @@ def scan_nifty500(fyers, start=0, limit=50, symbols=None):
                 "expected_move": trade["expected_move"],
             }
 
-            score = calculate_smart_score(data)
-            data["technical_score"] = score
-            signal = get_signal(score)
+            technical_score = calculate_technical_score_70(
+                price=price,
+                rsi=rsi,
+                ema20=ema20,
+                ema50=ema50,
+                ema200=ema200,
+                vwap=vwap,
+                supertrend=supertrend,
+                volume_signal=volume_signal,
+                breakout=breakout,
+                pattern=pattern
+            )
 
-            # Strong Breakout Confirmation
+            data["technical_score"] = technical_score
 
-            if breakout == "STRONG":
-                score += 10
+           score = technical_score
+        
+            if technical_score >= 60:
+                signal = "STRONG BUY"
+            elif technical_score >= 52:
+                signal = "BUY"
+            else:
+                signal = "NO BUY"
 
-                if signal in ["BUY", "STRONG BUY"]:
-                    signal = "STRONG BUY"
-
-            data["score"] = score
+            data["score"] = technical_score
+            data["technical_score"] = technical_score
             data["signal"] = signal
 
             missing_conditions = []
@@ -209,9 +299,9 @@ def scan_nifty500(fyers, start=0, limit=50, symbols=None):
             if volume_signal not in ["HIGH", "NORMAL"]:
                 missing_conditions.append("Volume Low")
 
-            if score < 70:
-                missing_conditions.append("Tech Score < 70")
-
+            if technical_score < 52:
+                missing_conditions.append("Technical Score < 52/70")
+    
             if fundamental_score < 70:
                 missing_conditions.append("Fund Score < 70")
 

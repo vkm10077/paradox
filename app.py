@@ -11,7 +11,6 @@ from dashboard import get_dashboard_data
 from scanner import scan_nifty500
 from scalping import generate_scalping_signal
 from fundamental import calculate_fundamental_score
-from news import get_news_impact
 from risk_reward import calculate_trade_levels
 
 app = Flask(__name__)

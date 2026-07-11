@@ -223,6 +223,9 @@ def scan_nifty500(fyers, start=0, limit=50, symbols=None):
             stoploss = support
 
             risk = entry - stoploss
+            final_target = round(entry + (risk * 3), 2)
+
+            data["final_target"] = final_target
 
             target1 = round(entry + risk, 2)
 
@@ -271,6 +274,10 @@ def scan_nifty500(fyers, start=0, limit=50, symbols=None):
             )
 
             data["technical_score"] = technical_score
+            # Final Score = Technical (70) + Fundamental (30)
+            final_score = technical_score + (fundamental_score * 0.30)
+
+            data["final_score"] = round(final_score)
 
             score = technical_score
         

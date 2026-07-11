@@ -218,7 +218,6 @@
         <p><b>Current Price:</b> {{ searched_stock.price }}</p>
         <p><b>Technical Score:</b> {{ searched_stock.technical_score }}</p>
         <p><b>Fundamental Score:</b> {{ searched_stock.fundamental_score }}</p>
-        <p><b>News:</b> {{ searched_stock.news }}</p>
         <p><b>Entry:</b> {{ searched_stock.entry }}</p>
         <p><b>SL:</b> {{ searched_stock.sl }}</p>
         <p><b>Risk Reward:</b> {{ searched_stock.risk_reward }}</p>
@@ -233,14 +232,14 @@
         <th>Current Price</th>
         <th>Technical Score</th>
         <th>Fundamental Score</th>
-        <th>News</th>
+        <th>Final Score</th>
         <th>Entry</th>
         <th>SL</th>
+        <th>Final Target</th>
+        <th>Expected Move</th>
         <th>Risk : Reward</th>
         <th>Hold</th>
-        <th>Expected Move</th>
-        <th>Status</th>
-        <th>Missing</th>
+        <th>Signal</th>
     </tr>
 
     {% for stock in scanner_results %}
@@ -249,20 +248,20 @@
         <td>{{ stock.price }}</td>
         <td>{{ stock.technical_score }}</td>
         <td>{{ stock.fundamental_score }}</td>
-        <td>{{ stock.news }}</td>
+        <td>{{ stock.final_score }}</td>
         <td>{{ stock.entry }}</td>
-        <td>{{ stock.sl }}</td>
+        <td class="red">{{ stock.sl }}</td>
+        <td class="green">{{ stock.final_target }}</td>
+        <td>{{ stock.expected_move }}</td>
         <td>{{ stock.risk_reward }}</td>
         <td>{{ stock.hold }}</td>
-        <td>{{ stock.expected_move }}</td>
-        <td>{{ stock.status }}</td>
-        <td>{{ stock.missing }}</td>
+        <td class="green">{{ stock.signal }}</td>
     </tr>
     {% endfor %}
 
     {% if scanner_results|length == 0 %}
     <tr>
-        <td colspan="11">No High Probability BUY Setup</td>
+        <td colspan="12">No High Probability BUY Setup</td>
     </tr>
     {% endif %}
 </table>

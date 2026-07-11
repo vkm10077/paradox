@@ -222,8 +222,7 @@ def scan_nifty500(fyers, start=0, limit=50, symbols=None):
             if signal not in ["BUY", "STRONG BUY"]:
                 missing_conditions.append("Signal Not BUY")
 
-            if len(missing_conditions) == 0:
-                data["signal"] = signal
+            if signal in ["BUY", "STRONG BUY"]:
                 results.append(data)
                 
         except Exception:

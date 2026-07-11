@@ -10,6 +10,8 @@ from indicators import (
     calculate_volume_signal
 )
 from smart_score import calculate_smart_score, get_signal
+from fundamental import calculate_fundamental_score
+from risk_reward import calculate_trade_levels
 
 def detect_pattern(df):
     last = df.iloc[-1]
@@ -54,7 +56,7 @@ def detect_pattern(df):
     ):
         return "Bearish Engulfing"
 
-        return "NA"
+    return "NA"
 
 def get_historical_df(fyers, symbol):
     to_date = datetime.now().strftime("%Y-%m-%d")
@@ -125,7 +127,6 @@ def scan_nifty500(fyers, start=0, limit=50, symbols=None):
 
             fundamental_score = calculate_fundamental_score(fundamental_data)
 
-            news_impact = get_news_impact(symbol)
             rsi = calculate_rsi(df)
             ema20 = calculate_ema(df, 20)
             ema50 = calculate_ema(df, 50)
@@ -222,20 +223,9 @@ def scan_nifty500(fyers, start=0, limit=50, symbols=None):
                 missing_conditions.append("Signal Not BUY")
 
             if len(missing_conditions) == 0:
-                data["status"] = "BUY"
-                data["missing"] = "All OK"
+                data["signal"] = signal
                 results.append(data)
-
-            elif len(missing_conditions) <= 3:
-                data["status"] = "WATCH"
-                data["missing"] = ", ".join(missing_conditions)
-                results.append(data)
-
-            elif symbols:
-                data["status"] = "AVOID"
-                data["missing"] = ", ".join(missing_conditions)
-                results.append(data)
-
+                
         except Exception:
             continue
 

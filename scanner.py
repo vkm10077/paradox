@@ -272,7 +272,7 @@ def scan_nifty500(fyers, start=0, limit=50, symbols=None):
 
             data["technical_score"] = technical_score
 
-           score = technical_score
+            score = technical_score
         
             if technical_score >= 60:
                 signal = "STRONG BUY"

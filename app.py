@@ -214,14 +214,32 @@ def dashboard():
     if "access_token" not in session:
         return redirect("/login")
 
-    fyers = get_fyers(CLIENT_ID, session["access_token"])
-    quotes = get_dashboard_data(CLIENT_ID, session["access_token"])
-    print("QUOTES RESPONSE:", quotes)
-
     fyers_error = None
 
-    if not quotes or quotes.get("s") != "ok":
-        fyers_error = quotes
+    try:
+        fyers = get_fyers(
+            CLIENT_ID,
+            session["access_token"]
+        )
+
+        quotes = get_dashboard_data(
+            CLIENT_ID,
+            session["access_token"]
+        )
+
+        print(
+            "QUOTES STATUS:",
+            quotes.get("s") if isinstance(quotes, dict) else "invalid"
+        )
+
+        if not isinstance(quotes, dict) or quotes.get("s") != "ok":
+            fyers_error = quotes
+            quotes = {"s": "ok", "d": []}
+
+    except Exception as e:
+        print("FYERS DASHBOARD ERROR:", repr(e))
+
+        fyers_error = str(e)
         quotes = {"s": "ok", "d": []}
 
         return render_template(

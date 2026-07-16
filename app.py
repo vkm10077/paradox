@@ -43,7 +43,7 @@ def callback():
 
     response = fyers_session.generate_token()
 
-    print("TOKEN RESPONSE:", response)
+    print("FYERS TOKEN STATUS:", token_response.get("s"))
 
     if response.get("s") != "ok":
         return f"""

@@ -140,43 +140,6 @@
 
 <div class="card">
 
-<h2>⚡ Live Scalping Signals</h2>
-
-<table>
-<tr>
-    <th>Index</th>
-    <th>Strike</th>
-    <th>Premium CE/PE</th>
-    <th>Entry Price</th>
-    <th>SL</th>
-    <th>T1</th>
-    <th>T2</th>
-    <th>T3</th>
-    <th>Confidence</th>
-    <th>Missing</th>
-    <th>Signal</th>
-</tr>
-
-<tbody id="scalping-body">
-{% for s in scalping_trades %}
-<tr>
-    <td>{{ s.index }}</td>
-    <td>{{ s.strike }}</td>
-    <td>{{ s.option_type }} ₹{{ s.premium }}</td>
-    <td>{{ s.entry }}</td>
-    <td class="red">{{ s.sl }}</td>
-    <td>{{ s.t1 }}</td>
-    <td>{{ s.t2 }}</td>
-    <td>{{ s.t3 }}</td>
-    <td>{{ s.confidence }}%</td>
-    <td>{{ s.missing }}</td>
-    <td class="green">{{ s.signal }}</td>
-</tr>
-{% endfor %}
-</tbody>
-
-</table>
-
 </div>
 
 <br><br>   

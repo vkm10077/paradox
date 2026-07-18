@@ -237,39 +237,6 @@
     <a href="/login">Login Again with FYERS</a>
 </div>
 {% endif %}
-<script>
-function updateScalpingSignals() {
-    fetch("/api/scalping")
-        .then(response => response.json())
-        .then(data => {
-            const body = document.getElementById("scalping-body");
-            if (!body || !data.scalping_trades) return;
-
-            body.innerHTML = "";
-
-            data.scalping_trades.forEach(s => {
-                body.innerHTML += `
-                    <tr>
-                        <td>${s.index}</td>
-                        <td>${s.strike}</td>
-                        <td>${s.option_type} ₹${s.premium}</td>
-                        <td>${s.entry}</td>
-                        <td class="red">${s.sl}</td>
-                        <td>${s.t1}</td>
-                        <td>${s.t2}</td>
-                        <td>${s.t3}</td>
-                        <td>${s.confidence}%</td>
-                        <td>${s.missing}</td>
-                        <td class="green">${s.signal}</td>
-                    </tr>
-                `;
-            });
-        })
-        .catch(error => console.log("Scalping update error:", error));
-}
-
-setInterval(updateScalpingSignals, 5000);
-</script>
 
 </body>   
 </html>

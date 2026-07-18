@@ -33,14 +33,12 @@ def login():
     
 @app.route("/callback")
 def callback():
-
     auth_code = request.args.get("auth_code")
 
     if not auth_code:
-        return "Authorization code not received."
+        return "Authorization code not received.", 400
 
     fyers_session.set_token(auth_code)
-
     response = fyers_session.generate_token()
 
     print("FYERS TOKEN STATUS:", response.get("s"))
@@ -50,97 +48,26 @@ def callback():
         <h2>Token Error</h2>
         <pre>{response}</pre>
         <a href="/login">Login Again</a>
-        """
+        """, 400
 
-    response["access_token"]
+    access_token = response.get("access_token")
 
-    fyers = fyersModel.FyersModel(
-        client_id=CLIENT_ID,
-        token=access_token,
-        is_async=False
-    )
+    if not access_token:
+        return f"""
+        <h2>Access Token Not Received</h2>
+        <pre>{response}</pre>
+        <a href="/login">Login Again</a>
+        """, 400
 
-    profile = fyers.get_profile()
     session["access_token"] = access_token
-    return redirect("/dashboard") 
+    return redirect("/dashboard")
+
 @app.route("/")
 def home():
+    if "access_token" in session:
+        return redirect("/dashboard")
 
-    # Demo Data (अभी टेस्ट के लिए)
-    data = {
-        "close": [
-            100,101,102,103,104,105,106,107,108,109,
-            110,111,112,113,114,115,116,117,118,119,
-            120,121,122,123,124,125,126,127,128,129,
-            130,131,132,133,134,135,136,137,138,139,
-            140,141,142,143,144,145,146,147,148,149,
-            150
-        ]
-    }
-
-    df = pd.DataFrame(data)
-
-    result = scan_stock(df)
-
-    return f"""
-<!DOCTYPE html>
-<html>
-<head>
-<title>Professional Trading Dashboard</title>
-
-<style>
-body {{
-    font-family: Arial;
-    background:#f5f5f5;
-    padding:30px;
-}}
-
-.card {{
-    background:white;
-    border-radius:10px;
-    padding:20px;
-    box-shadow:0 2px 10px rgba(0,0,0,.15);
-}}
-
-.btn {{
-    background:#28a745;
-    color:white;
-    padding:12px 25px;
-    text-decoration:none;
-    border-radius:8px;
-    font-size:18px;
-}}
-
-pre {{
-    background:#eee;
-    padding:15px;
-    border-radius:8px;
-}}
-</style>
-
-</head>
-
-<body>
-
-<div class="card">
-
-<h1>Professional Trading Dashboard</h1>
-
-<p>
-<a class="btn" href="/login">
-🔐 Login with FYERS
-</a>
-</p>
-
-<h2>Scanner Result</h2>
-
-<pre>{result}</pre>
-
-</div>
-
-</body>
-</html>
-"""
+    return redirect("/login")
 
 def build_index_data(rows):
     index_data = {}
@@ -214,7 +141,12 @@ def dashboard():
     if "access_token" not in session:
         return redirect("/login")
 
+    fyers = None
     fyers_error = None
+    quotes = {"s": "ok", "d": []}
+    rows = []
+    scanner_results = []
+    scalping_trades = []
 
     try:
         fyers = get_fyers(
@@ -229,87 +161,155 @@ def dashboard():
 
         print(
             "QUOTES STATUS:",
-            quotes.get("s") if isinstance(quotes, dict) else "invalid"
+            quotes.get("s")
+            if isinstance(quotes, dict)
+            else "invalid"
         )
 
-        if not isinstance(quotes, dict) or quotes.get("s") != "ok":
+        if not isinstance(quotes, dict):
+            fyers_error = "Invalid quotes response"
+            quotes = {"s": "ok", "d": []}
+
+        elif quotes.get("s") != "ok":
             fyers_error = quotes
             quotes = {"s": "ok", "d": []}
 
     except Exception as e:
         print("FYERS DASHBOARD ERROR:", repr(e))
-
         fyers_error = str(e)
-        quotes = {"s": "ok", "d": []}
 
-        
-    rows = []
+    # Dashboard quote rows
+    for item in quotes.get("d", []):
+        if item.get("s") != "ok":
+            continue
 
-    if quotes.get("s") == "ok":
-        for item in quotes.get("d", []):
-            v = item.get("v", {})
+        value = item.get("v", {})
 
-            if item.get("s") == "ok":
-                rows.append({
-                    "symbol": v.get("short_name", item.get("n")),
-                    "price": v.get("lp", 0),
-                    "change": v.get("ch", 0),
-                    "change_pct": v.get("chp", 0),
-                    "high": v.get("high_price", 0),
-                    "low": v.get("low_price", 0),
-                    "open": v.get("open_price", 0),
-                    "prev_close": v.get("prev_close_price", 0),
-                })
-                
-    batch = (int(time.time() / 30) % 10)
+        rows.append({
+            "symbol": value.get(
+                "short_name",
+                item.get("n", "-")
+            ),
+            "price": value.get("lp", 0),
+            "change": value.get("ch", 0),
+            "change_pct": value.get("chp", 0),
+            "high": value.get("high_price", 0),
+            "low": value.get("low_price", 0),
+            "open": value.get("open_price", 0),
+            "prev_close": value.get("prev_close_price", 0),
+        })
 
+    # हर 30 सेकंड में NIFTY 500 का अगला batch
+    batch = int(time.time() / 30) % 10
     start = batch * 50
 
-    scanner_results = scan_nifty500(
-        fyers,
-        start=start,
-        limit=50
-    )
+    if fyers is not None:
+        try:
+            scanner_response = scan_nifty500(
+                fyers,
+                start=start,
+                limit=50
+            )
+
+            if isinstance(scanner_response, list):
+                scanner_results = scanner_response
+            else:
+                print(
+                    "INVALID SCANNER RESPONSE:",
+                    scanner_response
+                )
+
+        except Exception as e:
+            print("SCANNER ERROR:", repr(e))
+            fyers_error = fyers_error or str(e)
 
     print("Scanner Results:", scanner_results)
     print("Total Stocks:", len(scanner_results))
 
-    index_data = build_index_data(rows)
+    # Index data तथा scalping signals
+    try:
+        index_data = build_index_data(rows)
+    except Exception as e:
+        print("INDEX DATA ERROR:", repr(e))
+        index_data = {}
 
-    scalping_trades = []
+    if fyers is not None:
+        for index_name, data in index_data.items():
+            try:
+                trade = generate_scalping_signal(
+                    index_name,
+                    data,
+                    fyers
+                )
 
-    for index_name, data in index_data.items():
-        trade = generate_scalping_signal(index_name, data, fyers)
+                if trade:
+                    scalping_trades.append({
+                        "index": trade.get(
+                            "index",
+                            index_name
+                        ),
+                        "strike": trade.get(
+                            "strike",
+                            "-"
+                        ),
+                        "option_type": trade.get(
+                            "option_type",
+                            "-"
+                        ),
+                        "premium": trade.get(
+                            "premium",
+                            trade.get("entry", 0)
+                        ),
+                        "entry": trade.get(
+                            "entry",
+                            trade.get("premium", 0)
+                        ),
+                        "sl": trade.get("sl", 0),
+                        "t1": trade.get("t1", 0),
+                        "t2": trade.get("t2", 0),
+                        "t3": trade.get("t3", 0),
+                        "confidence": trade.get(
+                            "confidence",
+                            0
+                        ),
+                        "missing": trade.get(
+                            "missing",
+                            "-"
+                        ),
+                        "signal": trade.get(
+                            "signal",
+                            "BUY"
+                        )
+                    })
 
-        if trade:
-            scalping_trades.append({
-                "index": trade.get("index", index_name),
-                "strike": trade.get("strike", "-"),
-                "option_type": trade.get("option_type", "-"),
-                "premium": trade.get("premium", trade.get("entry", 0)),
-                "entry": trade.get("entry", trade.get("premium", 0)),
-                "sl": trade.get("sl", 0),
-                "t1": trade.get("t1", 0),
-                "t2": trade.get("t2", 0),
-                "t3": trade.get("t3", 0),
-                "confidence": trade.get("confidence", 0),
-                "missing": trade.get("missing", "-"),
-                "signal": trade.get("signal", "BUY")
-            })
-    
+            except Exception as e:
+                print(
+                    f"SCALPING ERROR {index_name}:",
+                    repr(e)
+                )
 
     print("INDEX DATA:", index_data)
     print("SCALPING TRADES:", scalping_trades)
 
     scalping_trades = scalping_trades[:3]
 
-    search_stock = request.args.get("stock", "").upper().strip()
-    selected_signal = request.args.get("signal", "ALL")
+    search_stock = request.args.get(
+        "stock",
+        ""
+    ).upper().strip()
 
-    if selected_signal != "ALL":   
+    selected_signal = request.args.get(
+        "signal",
+        "ALL"
+    ).upper().strip()
+
+    if selected_signal != "ALL":
         scanner_results = [
-            stock for stock in scanner_results
-            if stock.get("signal") == selected_signal
+            stock
+            for stock in scanner_results
+            if str(
+                stock.get("signal", "")
+            ).upper() == selected_signal
         ]
 
     searched_stock = None
@@ -319,59 +319,115 @@ def dashboard():
             (
                 stock
                 for stock in scanner_results
-                if search_stock in stock.get("stock", "").upper()
+                if search_stock in str(
+                    stock.get("stock", "")
+                ).upper()
             ),
             None
         )
-        
-    return render_template(
-    "dashboard.html",
-    rows=rows,
-    scanner_results=scanner_results,
-    selected_signal=selected_signal,
-    scalping_trades=scalping_trades,
-    search_stock=search_stock,
-    searched_stock=searched_stock    
-)
 
+    return render_template(
+        "dashboard.html",
+        rows=rows,
+        scanner_results=scanner_results,
+        selected_signal=selected_signal,
+        scalping_trades=scalping_trades,
+        search_stock=search_stock,
+        searched_stock=searched_stock,
+        fyers_error=fyers_error
+    )
+    
 @app.route("/api/scalping")
 def api_scalping():
     if "access_token" not in session:
-        return {"error": "login required"}
+        return {
+            "error": "login required",
+            "scalping_trades": []
+        }, 401
 
-    fyers = get_fyers(CLIENT_ID, session["access_token"])
-    quotes = get_dashboard_data(CLIENT_ID, session["access_token"])
+    try:
+        fyers = get_fyers(
+            CLIENT_ID,
+            session["access_token"]
+        )
 
-    rows = []
+        quotes = get_dashboard_data(
+            CLIENT_ID,
+            session["access_token"]
+        )
 
-    if quotes and quotes.get("s") == "ok":
+        if (
+            not isinstance(quotes, dict)
+            or quotes.get("s") != "ok"
+        ):
+            return {
+                "error": "Unable to fetch quotes",
+                "details": quotes,
+                "scalping_trades": []
+            }, 502
+
+        rows = []
+
         for item in quotes.get("d", []):
-            v = item.get("v", {})
+            if item.get("s") != "ok":
+                continue
 
-            if item.get("s") == "ok":
-                rows.append({
-                    "symbol": v.get("short_name", item.get("n")),
-                    "price": v.get("lp", 0),
-                    "change": v.get("ch", 0),
-                    "change_pct": v.get("chp", 0),
-                    "high": v.get("high_price", 0),
-                    "low": v.get("low_price", 0),
-                    "open": v.get("open_price", 0),
-                    "prev_close": v.get("prev_close_price", 0),
-                })
+            value = item.get("v", {})
 
-    index_data = build_index_data(rows)
+            rows.append({
+                "symbol": value.get(
+                    "short_name",
+                    item.get("n", "-")
+                ),
+                "price": value.get("lp", 0),
+                "change": value.get("ch", 0),
+                "change_pct": value.get("chp", 0),
+                "high": value.get("high_price", 0),
+                "low": value.get("low_price", 0),
+                "open": value.get("open_price", 0),
+                "prev_close": value.get(
+                    "prev_close_price",
+                    0
+                ),
+            })
 
-    scalping_trades = []
+        index_data = build_index_data(rows)
+        scalping_trades = []
 
-    for index_name, data in index_data.items():
-        trade = generate_scalping_signal(index_name, data, fyers)
+        for index_name, data in index_data.items():
+            try:
+                trade = generate_scalping_signal(
+                    index_name,
+                    data,
+                    fyers
+                )
 
-        if trade:
-            scalping_trades.append(trade)
+                if trade:
+                    scalping_trades.append(trade)
 
-    return {"scalping_trades": scalping_trades[:3]}
+            except Exception as e:
+                print(
+                    f"API SCALPING ERROR {index_name}:",
+                    repr(e)
+                )
 
+        return {
+            "scalping_trades": scalping_trades[:3]
+        }, 200
+
+    except Exception as e:
+        print("API SCALPING ERROR:", repr(e))
+
+        return {
+            "error": str(e),
+            "scalping_trades": []
+        }, 500
+        
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+
+    app.run(
+        host="0.0.0.0",
+        port=port,
+        debug=False
+    )

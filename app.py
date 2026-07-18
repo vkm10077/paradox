@@ -266,8 +266,7 @@ def dashboard():
         scanner_results=scanner_results,
         selected_signal=selected_signal,
         search_stock=search_stock,
-        searched_stock=searched_stock,
-        fyers_error=fyers_error
+        searched_stock=searched_stock
     )
             
 if __name__ == "__main__":

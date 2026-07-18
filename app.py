@@ -226,73 +226,7 @@ def dashboard():
     print("Scanner Results:", scanner_results)
     print("Total Stocks:", len(scanner_results))
 
-    # Index data तथा scalping signals
-    try:
-        index_data = build_index_data(rows)
-    except Exception as e:
-        print("INDEX DATA ERROR:", repr(e))
-        index_data = {}
-
-    if fyers is not None:
-        for index_name, data in index_data.items():
-            try:
-                trade = generate_scalping_signal(
-                    index_name,
-                    data,
-                    fyers
-                )
-
-                if trade:
-                    scalping_trades.append({
-                        "index": trade.get(
-                            "index",
-                            index_name
-                        ),
-                        "strike": trade.get(
-                            "strike",
-                            "-"
-                        ),
-                        "option_type": trade.get(
-                            "option_type",
-                            "-"
-                        ),
-                        "premium": trade.get(
-                            "premium",
-                            trade.get("entry", 0)
-                        ),
-                        "entry": trade.get(
-                            "entry",
-                            trade.get("premium", 0)
-                        ),
-                        "sl": trade.get("sl", 0),
-                        "t1": trade.get("t1", 0),
-                        "t2": trade.get("t2", 0),
-                        "t3": trade.get("t3", 0),
-                        "confidence": trade.get(
-                            "confidence",
-                            0
-                        ),
-                        "missing": trade.get(
-                            "missing",
-                            "-"
-                        ),
-                        "signal": trade.get(
-                            "signal",
-                            "BUY"
-                        )
-                    })
-
-            except Exception as e:
-                print(
-                    f"SCALPING ERROR {index_name}:",
-                    repr(e)
-                )
-
-    print("INDEX DATA:", index_data)
-    print("SCALPING TRADES:", scalping_trades)
-
-    scalping_trades = scalping_trades[:3]
-
+    
     search_stock = request.args.get(
         "stock",
         ""
@@ -331,7 +265,6 @@ def dashboard():
         rows=rows,
         scanner_results=scanner_results,
         selected_signal=selected_signal,
-        scalping_trades=scalping_trades,
         search_stock=search_stock,
         searched_stock=searched_stock,
         fyers_error=fyers_error

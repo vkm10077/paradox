@@ -220,23 +220,6 @@
         <td>{{ stock.hold }}</td>
         <td class="green">{{ stock.signal }}</td>
     </tr>
-    {% endfor %}
-
-    {% if scanner_results|length == 0 %}
-    <tr>
-        <td colspan="12">No High Probability BUY Setup</td>
-    </tr>
-    {% endif %}
-</table>
-</div>
     
-{% if fyers_error %}
-<div class="card">
-    <h2 class="red">FYERS Data Error</h2>
-    <pre>{{ fyers_error }}</pre>
-    <a href="/login">Login Again with FYERS</a>
-</div>
-{% endif %}
-
 </body>   
 </html>

@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: fyers-dashboard
-    runtime: python
-    plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app

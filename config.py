@@ -167,7 +167,7 @@ def get_timeframe_config() -> Dict[str, Dict[str, str]]:
     Scanner में उपलब्ध सभी holding-period options।
     """
 
-    return 
+    return { 
         "swing": {
             "label": "Swing",
             "holding_period": "5–30 Days",
@@ -203,4 +203,4 @@ def get_timeframe_config() -> Dict[str, Dict[str, str]]:
             "holding_period": "5–10 Years",
             "history_resolution": "D",
             "history_days": "3650"
-        }
+        }}
